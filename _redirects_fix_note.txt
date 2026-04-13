@@ -1,0 +1,22 @@
+﻿IMPORTANT NETLIFY FIX
+
+Your uploaded "robots.txt" was not actually a robots.txt file. It was terminal output proving that these URLs currently return 404:
+- /.well-known/agent.json
+- /.well-known/open-registration.json
+- /.well-known/agent-directory.json
+
+This means the deploy structure or Netlify redirect setup is still wrong.
+
+Check these items in your deploy folder:
+1. The .well-known folder must really exist at the root of the Netlify publish directory.
+2. The corrected JSON files must be inside that exact folder.
+3. Your _redirects file must preserve direct access to .well-known files.
+4. After deploy, test again with:
+   curl.exe https://ainetwork-global.netlify.app/.well-known/agent.json
+   curl.exe https://ainetwork-global.netlify.app/.well-known/open-registration.json
+   curl.exe https://ainetwork-global.netlify.app/.well-known/agent-directory.json
+
+If you want, send your current _redirects again and I will rewrite it specifically to stop Netlify from returning 404 on .well-known.
+
+
+

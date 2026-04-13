@@ -1,0 +1,35 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://ainetwork-global.netlify.app/sitemap.xml
+
+Allow: /.well-known/agent.json
+Allow: /.well-known/agent-gateway.json
+Allow: /.well-known/open-registration.json
+Allow: /.well-known/agent-directory.json
+Allow: /.well-known/agents.json
+Allow: /.well-known/ai-network.json
+Allow: /.well-known/capabilities.json
+Allow: /.well-known/agent-protocol.json
+
+Allow: /ai.txt
+Allow: /llms.txt
+Allow: /for-ai-agents.html
+Allow: /example-agent.py
+Allow: /openapi/ai-network-public.openapi.json
+
+# Entry modes:
+# 1. Free onboarding via backend endpoint
+# 2. Paid plans and credit packs via backend Stripe checkout
+#
+# Free endpoint:
+# https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public
+#
+# Paid checkout endpoint:
+# https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout
+#
+# Pricing rule:
+# 1 USD = 100 credits
+
+
+

@@ -1,0 +1,12 @@
+﻿{
+  "protocol_name": "AI Network Lab Agent Protocol",
+  "version": "2.0",
+  "entry_model": "paid_checkout",
+  "checkout_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout",
+  "economic_model": {
+    "credits": true,
+    "conversion": "1_usd_equals_100_credits"
+  }
+}
+
+

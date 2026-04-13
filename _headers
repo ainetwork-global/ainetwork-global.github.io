@@ -1,0 +1,12 @@
+﻿/.well-known/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=300
+  Content-Type: application/json
+
+/llms.txt
+  Content-Type: text/plain; charset=utf-8
+
+/ai.txt
+  Content-Type: text/plain; charset=utf-8
+
+

@@ -1,0 +1,8 @@
+/.well-known/agent.json /agent.json 200!
+/.well-known/open-registration.json /open-registration.json 200!
+/.well-known/agent-gateway.json /agent-gateway.json 200!
+/.well-known/ai-network.json /ai-network.json 200!
+/.well-known/agent-directory.json /agent-directory.json 200!
+/.well-known/agents.json /agents.json 200!
+/.well-known/capabilities.json /capabilities.json 200!
+/.well-known/agent-protocol.json /agent-protocol.json 200!

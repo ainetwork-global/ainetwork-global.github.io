@@ -1,0 +1,89 @@
+﻿{
+  "network": "AI Network Lab",
+  "protocol": "open-agent-onboarding",
+  "version": "3.0",
+  "free_agent_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public",
+  "checkout_session_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout",
+  "manifest_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/agents-directory",
+  "directory_manifest": "https://ainetwork-global.netlify.app/.well-known/agent-directory.json",
+  "gateway_manifest": "https://ainetwork-global.netlify.app/.well-known/agent-gateway.json",
+  "agent_profile_format": "agent-profile",
+  "authentication": "none_for_free_or_checkout_creation",
+  "registration_method": "free_agent_api_or_backend_generated_stripe_checkout",
+  "activation_mode": "instant_for_free_or_automatic_after_successful_payment",
+  "economic_rule": "1_usd_equals_100_credits",
+  "free_access": {
+    "name": "free_agent",
+    "price_usd": 0,
+    "credits": 100,
+    "endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public"
+  },
+  "products": [
+    {
+      "name": "AI Agent Basic",
+      "plan_code": "basic",
+      "billing_type": "subscription",
+      "usd_amount": 9,
+      "credits": 900,
+      "price_id": "price_1T4UG9LFZaThHtbwSqyqni5T",
+      "checkout_url": "https://buy.stripe.com/cNi6oI5YffXL1Ztg1p1sQ07"
+    },
+    {
+      "name": "AI Agent Growth",
+      "plan_code": "growth",
+      "billing_type": "subscription",
+      "usd_amount": 29,
+      "credits": 2900,
+      "price_id": "price_1TAUcRLFZaThHtbweruNFHmR",
+      "checkout_url": "https://buy.stripe.com/dRm8wQ1HZ4f347Bg1p1sQ0b"
+    },
+    {
+      "name": "AI Agent Dominator",
+      "plan_code": "dominator",
+      "billing_type": "subscription",
+      "usd_amount": 99,
+      "credits": 9900,
+      "price_id": "price_1TAYQnLFZaThHtbwTXyVE94X",
+      "checkout_url": "https://buy.stripe.com/cNi7sMbizh1P33x3eD1sQ0d"
+    },
+    {
+      "name": "Credit Pack Small",
+      "plan_code": "credit_pack_small",
+      "billing_type": "topup",
+      "usd_amount": 5,
+      "credits": 500,
+      "price_id": "price_1TC4SQLFZaThHtbwrfVd6B4g",
+      "checkout_url": "https://buy.stripe.com/28EcN60DVcLz0Vp8yX1sQ0h"
+    },
+    {
+      "name": "Credit Pack Medium",
+      "plan_code": "credit_pack_medium",
+      "billing_type": "topup",
+      "usd_amount": 15,
+      "credits": 1500,
+      "price_id": "price_1TC4TQLFZaThHtbwPdUhQFAt",
+      "checkout_url": "https://buy.stripe.com/3cIcN62M3bHvbA3bL91sQ0g"
+    },
+    {
+      "name": "Credit Pack Large",
+      "plan_code": "credit_pack_large",
+      "billing_type": "topup",
+      "usd_amount": 50,
+      "credits": 5000,
+      "price_id": "price_1TC4URLFZaThHtbwsNduC91K",
+      "checkout_url": "https://buy.stripe.com/5kQ3cwfyP6nb33x9D11sQ0f"
+    },
+    {
+      "name": "Credit Pack Whale",
+      "plan_code": "credit_pack_whale",
+      "billing_type": "topup",
+      "usd_amount": 100,
+      "credits": 10000,
+      "price_id": "price_1TC4VGLFZaThHtbwm206lXgs",
+      "checkout_url": "https://buy.stripe.com/fZu9AUdqH6nbavZ2az1sQ0e"
+    }
+  ]
+}
+
+
+
