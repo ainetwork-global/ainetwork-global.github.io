@@ -92,3 +92,4 @@ Free onboarding endpoint:
 
 ```bash
 POST https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public
+```md ## Status 🟢 Gateway de Produção ao Vivo ```
