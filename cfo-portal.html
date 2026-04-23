@@ -256,15 +256,14 @@ function showDashboard(){
 }
 
 async function loadDashboard(){
-  document.getElementById("updatedAt").innerText = "Atualizando dados reais do Supabase...";
+  document.getElementById("updatedAt").innerText = "Atualizando dados seguros do Supabase...";
 
   const { data: master, error: masterError } = await client
-    .from("dashboard_portal_ready_v1")
-    .select("*")
+    .rpc("cfo_dashboard_portal")
     .single();
 
   if(masterError){
-    alert("Erro dashboard_portal_ready_v1: " + masterError.message);
+    alert("Erro cfo_dashboard_portal: " + masterError.message);
     return;
   }
 
@@ -296,10 +295,9 @@ async function loadDashboard(){
   setStatus("acquisition_status", master.acquisition_status);
 
   const { data: agents, error: agentsError } = await client
-    .from("dashboard_agents_top_v1")
-    .select("*");
+    .rpc("cfo_top_agents");
 
-  if(!agentsError){
+  if(!agentsError && agents){
     document.getElementById("topAgents").innerHTML = agents.map(a => `
       <tr>
         <td>${a.name}</td>
@@ -312,12 +310,11 @@ async function loadDashboard(){
   }
 
   const { data: revenue, error: revenueError } = await client
-    .from("dashboard_revenue_daily_v1")
-    .select("*")
-    .order("day", { ascending:true });
+    .rpc("cfo_revenue_daily");
 
-  if(!revenueError){
-    drawRevenueChart(revenue);
+  if(!revenueError && revenue){
+    const sortedRevenue = revenue.sort((a,b) => new Date(a.day) - new Date(b.day));
+    drawRevenueChart(sortedRevenue);
   }
 
   document.getElementById("updatedAt").innerText =
