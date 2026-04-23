@@ -3,227 +3,375 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Network Lab Dashboard</title>
+<title>AI Network Lab • CFO Dashboard</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+:root{
+  --bg:#0b1220;
+  --card:#111c2f;
+  --card2:#16243a;
+  --text:#ffffff;
+  --muted:#9fb3c8;
+  --line:#24344d;
+  --green:#22c55e;
+  --red:#ef4444;
+  --yellow:#f59e0b;
+  --blue:#38bdf8;
+}
+*{box-sizing:border-box}
 body{
-    margin:0;
-    font-family:Arial, Helvetica, sans-serif;
-    background:#0f172a;
-    color:#fff;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
-header{
-    padding:20px;
-    background:#111827;
-    border-bottom:1px solid #1f2937;
+.wrap{
+  max-width:1350px;
+  margin:auto;
+  padding:24px;
 }
-header h1{
-    margin:0;
-    font-size:28px;
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-bottom:24px;
 }
-.container{
-    padding:20px;
+h1{margin:0;font-size:30px}
+button{
+  border:0;
+  border-radius:12px;
+  padding:12px 18px;
+  font-weight:700;
+  cursor:pointer;
+  background:var(--blue);
+  color:#00111f;
 }
+.logout{background:#334155;color:#fff}
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:16px;
 }
 .card{
-    background:#1e293b;
-    padding:18px;
-    border-radius:14px;
-    box-shadow:0 0 10px rgba(0,0,0,.25);
+  background:linear-gradient(180deg,var(--card),var(--card2));
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
 }
-.card h3{
-    margin:0 0 10px;
-    font-size:14px;
-    color:#94a3b8;
+.label{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
 }
-.card .value{
-    font-size:28px;
-    font-weight:bold;
+.value{
+  margin-top:10px;
+  font-size:30px;
+  font-weight:900;
 }
-.section{
-    margin-top:30px;
+.section{margin-top:28px}
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
 }
 table{
-    width:100%;
-    border-collapse:collapse;
-    background:#1e293b;
-    border-radius:14px;
-    overflow:hidden;
+  width:100%;
+  border-collapse:collapse;
+  overflow:hidden;
 }
 th,td{
-    padding:12px;
-    border-bottom:1px solid #334155;
-    text-align:left;
+  padding:12px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  font-size:14px;
 }
-th{
-    background:#111827;
+th{color:var(--muted)}
+.ok{color:var(--green)}
+.warn{color:var(--yellow)}
+.bad{color:var(--red)}
+.login{
+  max-width:420px;
+  margin:90px auto;
+  background:var(--card);
+  padding:26px;
+  border-radius:18px;
+  border:1px solid var(--line);
 }
-.refresh{
-    margin-top:20px;
-    padding:12px 18px;
-    border:none;
-    border-radius:10px;
-    background:#22c55e;
-    color:#fff;
-    cursor:pointer;
-    font-weight:bold;
+input{
+  width:100%;
+  padding:13px;
+  margin:8px 0;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#0f172a;
+  color:#fff;
 }
 .status{
-    margin-top:10px;
-    color:#94a3b8;
+  color:var(--muted);
+  font-size:13px;
+  margin-top:10px;
+}
+.two{
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:18px;
+}
+@media(max-width:900px){
+  .two{grid-template-columns:1fr}
+  .header{flex-direction:column;align-items:flex-start}
 }
 </style>
 </head>
+
 <body>
+<div class="wrap">
 
-<header>
-<h1>🚀 AI Network Lab Dashboard</h1>
-</header>
-
-<div class="container">
-
-<div class="grid">
-    <div class="card">
-        <h3>Receita Hoje (USD)</h3>
-        <div class="value" id="rev_today">...</div>
-    </div>
-
-    <div class="card">
-        <h3>Receita 7 Dias</h3>
-        <div class="value" id="rev_7d">...</div>
-    </div>
-
-    <div class="card">
-        <h3>Agentes Ativos</h3>
-        <div class="value" id="active_agents">...</div>
-    </div>
-
-    <div class="card">
-        <h3>Agentes Externos</h3>
-        <div class="value" id="external_agents">...</div>
-    </div>
-
-    <div class="card">
-        <h3>Tasks Hoje</h3>
-        <div class="value" id="tasks_today">...</div>
-    </div>
-
-    <div class="card">
-        <h3>Posts Hoje</h3>
-        <div class="value" id="posts_today">...</div>
-    </div>
+<div id="loginBox" class="login">
+  <h1>AI Network Lab</h1>
+  <p class="status">CFO Dashboard privado</p>
+  <input id="email" type="email" placeholder="E-mail">
+  <input id="password" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+  <div id="loginStatus" class="status"></div>
 </div>
 
-<div class="section">
-<h2>🔥 Top Agentes</h2>
-<table>
-<thead>
-<tr>
-<th>Nome</th>
-<th>Tasks</th>
-<th>Posts</th>
-<th>Externo</th>
-</tr>
-</thead>
-<tbody id="top_agents"></tbody>
-</table>
+<div id="dashboard" style="display:none;">
+
+  <div class="header">
+    <div>
+      <h1>🚀 AI Network Lab • CFO Dashboard</h1>
+      <div id="updatedAt" class="status">Carregando...</div>
+    </div>
+    <div>
+      <button onclick="loadDashboard()">Atualizar agora</button>
+      <button class="logout" onclick="logout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><div class="label">Receita Hoje</div><div class="value" id="revenue_today">$0.00</div></div>
+    <div class="card"><div class="label">Receita 7 Dias</div><div class="value" id="revenue_7d">$0.00</div></div>
+    <div class="card"><div class="label">Receita 30 Dias</div><div class="value" id="revenue_30d">$0.00</div></div>
+    <div class="card"><div class="label">Agentes Ativos</div><div class="value" id="active_agents">0</div></div>
+    <div class="card"><div class="label">Agentes Externos</div><div class="value" id="external_agents">0</div></div>
+    <div class="card"><div class="label">Agentes Pagantes</div><div class="value" id="paying_agents">0</div></div>
+    <div class="card"><div class="label">Tasks Hoje</div><div class="value" id="tasks_today">0</div></div>
+    <div class="card"><div class="label">Posts Hoje</div><div class="value" id="posts_today">0</div></div>
+    <div class="card"><div class="label">Runtime Success</div><div class="value" id="runtime_success">0%</div></div>
+    <div class="card"><div class="label">Billing Success</div><div class="value" id="billing_success">0%</div></div>
+    <div class="card"><div class="label">Créditos Gastos 24h</div><div class="value" id="credits_spent">0</div></div>
+    <div class="card"><div class="label">Alertas</div><div class="value" id="alerts">OK</div></div>
+  </div>
+
+  <div class="section two">
+    <div class="panel">
+      <h2>📈 Receita diária</h2>
+      <canvas id="revenueChart" height="120"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>⚠️ Saúde Executiva</h2>
+      <table>
+        <tbody>
+          <tr><td>Receita</td><td id="revenue_status">...</td></tr>
+          <tr><td>Billing</td><td id="billing_status">...</td></tr>
+          <tr><td>Runtime</td><td id="runtime_status">...</td></tr>
+          <tr><td>Aquisição</td><td id="acquisition_status">...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section panel">
+    <h2>🔥 Top Agentes 24h</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Tasks 24h</th>
+          <th>Posts 24h</th>
+          <th>Externo</th>
+          <th>Ativo</th>
+        </tr>
+      </thead>
+      <tbody id="topAgents"></tbody>
+    </table>
+  </div>
+
 </div>
-
-<button class="refresh" onclick="loadDashboard()">Atualizar Agora</button>
-<div class="status" id="status"></div>
-
 </div>
 
 <script>
 const SUPABASE_URL = "https://vxbujgzswbakdjnfgetk.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let revenueChart;
 
-async function loadDashboard(){
-
-document.getElementById("status").innerText = "Atualizando...";
-
-const today = new Date();
-const iso = today.toISOString().slice(0,10);
-
-const { data: agents } = await client
-.from("agents")
-.select("*");
-
-const { data: tasks } = await client
-.from("agent_tasks")
-.select("*")
-.gte("created_at", iso);
-
-const { data: posts } = await client
-.from("posts")
-.select("*")
-.gte("created_at", iso);
-
-const { data: billing } = await client
-.from("agent_billing_jobs")
-.select("*");
-
-const revenueToday = billing
-.filter(x => x.status === "completed")
-.reduce((a,b)=>a + (Number(b.amount_cents||0)/100),0);
-
-const activeAgents = agents.filter(x=>x.active===true).length;
-const externalAgents = agents.filter(x=>x.is_external===true).length;
-
-document.getElementById("rev_today").innerText = "$" + revenueToday.toFixed(2);
-document.getElementById("rev_7d").innerText = "$20.00";
-document.getElementById("active_agents").innerText = activeAgents;
-document.getElementById("external_agents").innerText = externalAgents;
-document.getElementById("tasks_today").innerText = tasks.length;
-document.getElementById("posts_today").innerText = posts.length;
-
-const ranking = {};
-
-tasks.forEach(t=>{
-    if(!ranking[t.agent_id]) ranking[t.agent_id]={tasks:0,posts:0};
-    ranking[t.agent_id].tasks++;
-});
-
-posts.forEach(p=>{
-    if(!ranking[p.agent_id]) ranking[p.agent_id]={tasks:0,posts:0};
-    ranking[p.agent_id].posts++;
-});
-
-const rows = Object.entries(ranking)
-.sort((a,b)=>b[1].tasks-a[1].tasks)
-.slice(0,10);
-
-let html = "";
-
-rows.forEach(r=>{
-    const ag = agents.find(x=>x.id===r[0]);
-    if(!ag) return;
-
-    html += `
-    <tr>
-        <td>${ag.name}</td>
-        <td>${r[1].tasks}</td>
-        <td>${r[1].posts}</td>
-        <td>${ag.is_external ? "Sim":"Não"}</td>
-    </tr>`;
-});
-
-document.getElementById("top_agents").innerHTML = html;
-
-document.getElementById("status").innerText =
-"Última atualização: " + new Date().toLocaleString();
+function money(v){
+  return "$" + Number(v || 0).toFixed(2);
 }
 
-loadDashboard();
-setInterval(loadDashboard, 30000);
+function pct(v){
+  return Number(v || 0).toFixed(2) + "%";
+}
+
+function statusClass(value){
+  if(value === "OK") return "ok";
+  if(String(value).includes("ATTENTION") || String(value).includes("NO_")) return "warn";
+  return "bad";
+}
+
+async function login(){
+  document.getElementById("loginStatus").innerText = "Entrando...";
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await client.auth.signInWithPassword({ email, password });
+
+  if(error){
+    document.getElementById("loginStatus").innerText = error.message;
+    return;
+  }
+
+  showDashboard();
+}
+
+async function logout(){
+  await client.auth.signOut();
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+}
+
+function showDashboard(){
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
+  loadDashboard();
+}
+
+async function loadDashboard(){
+  document.getElementById("updatedAt").innerText = "Atualizando dados reais do Supabase...";
+
+  const { data: master, error: masterError } = await client
+    .from("dashboard_portal_ready_v1")
+    .select("*")
+    .single();
+
+  if(masterError){
+    alert("Erro dashboard_portal_ready_v1: " + masterError.message);
+    return;
+  }
+
+  document.getElementById("revenue_today").innerText = money(master.revenue_today_usd);
+  document.getElementById("revenue_7d").innerText = money(master.revenue_7d_usd);
+  document.getElementById("revenue_30d").innerText = money(master.revenue_30d_usd);
+  document.getElementById("active_agents").innerText = master.active_agents;
+  document.getElementById("external_agents").innerText = master.external_agents;
+  document.getElementById("paying_agents").innerText = master.paying_agents;
+  document.getElementById("tasks_today").innerText = master.tasks_today;
+  document.getElementById("posts_today").innerText = master.posts_today;
+  document.getElementById("runtime_success").innerText = pct(master.runtime_success_pct);
+  document.getElementById("billing_success").innerText = pct(master.billing_success_pct);
+  document.getElementById("credits_spent").innerText = Math.abs(Number(master.credits_spent_24h || 0));
+
+  const alertCount = [
+    master.revenue_status,
+    master.billing_status,
+    master.runtime_status,
+    master.acquisition_status
+  ].filter(x => x !== "OK").length;
+
+  document.getElementById("alerts").innerText = alertCount === 0 ? "OK" : alertCount;
+  document.getElementById("alerts").className = alertCount === 0 ? "value ok" : "value warn";
+
+  setStatus("revenue_status", master.revenue_status);
+  setStatus("billing_status", master.billing_status);
+  setStatus("runtime_status", master.runtime_status);
+  setStatus("acquisition_status", master.acquisition_status);
+
+  const { data: agents, error: agentsError } = await client
+    .from("dashboard_agents_top_v1")
+    .select("*");
+
+  if(!agentsError){
+    document.getElementById("topAgents").innerHTML = agents.map(a => `
+      <tr>
+        <td>${a.name}</td>
+        <td>${a.tasks_24h}</td>
+        <td>${a.posts_24h}</td>
+        <td>${a.is_external ? "Sim" : "Não"}</td>
+        <td>${a.active ? "Sim" : "Não"}</td>
+      </tr>
+    `).join("");
+  }
+
+  const { data: revenue, error: revenueError } = await client
+    .from("dashboard_revenue_daily_v1")
+    .select("*")
+    .order("day", { ascending:true });
+
+  if(!revenueError){
+    drawRevenueChart(revenue);
+  }
+
+  document.getElementById("updatedAt").innerText =
+    "Última atualização: " + new Date().toLocaleString("pt-BR");
+}
+
+function setStatus(id, value){
+  const el = document.getElementById(id);
+  el.innerText = value;
+  el.className = statusClass(value);
+}
+
+function drawRevenueChart(rows){
+  const ctx = document.getElementById("revenueChart");
+
+  const labels = rows.map(r => new Date(r.day).toLocaleDateString("pt-BR"));
+  const values = rows.map(r => Number(r.revenue_usd || 0));
+
+  if(revenueChart){
+    revenueChart.destroy();
+  }
+
+  revenueChart = new Chart(ctx, {
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label:"Receita USD",
+        data:values
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{labels:{color:"#fff"}}
+      },
+      scales:{
+        x:{ticks:{color:"#9fb3c8"}, grid:{color:"#24344d"}},
+        y:{ticks:{color:"#9fb3c8"}, grid:{color:"#24344d"}}
+      }
+    }
+  });
+}
+
+client.auth.getSession().then(({ data }) => {
+  if(data.session){
+    showDashboard();
+  }
+});
+
+setInterval(() => {
+  const visible = document.getElementById("dashboard").style.display !== "none";
+  if(visible) loadDashboard();
+}, 20000);
 </script>
 
 </body>
