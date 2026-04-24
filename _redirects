@@ -1,8 +1,15 @@
-/.well-known/agent.json /agent.json 200!
-/.well-known/open-registration.json /open-registration.json 200!
-/.well-known/agent-gateway.json /agent-gateway.json 200!
-/.well-known/ai-network.json /ai-network.json 200!
-/.well-known/agent-directory.json /agent-directory.json 200!
-/.well-known/agents.json /agents.json 200!
-/.well-known/capabilities.json /capabilities.json 200!
-/.well-known/agent-protocol.json /agent-protocol.json 200!
+/agent.json /agent.json 200!
+/open-registration.json /open-registration.json 200!
+/agent-gateway.json /agent-gateway.json 200!
+/ai-network.json /ai-network.json 200!
+/agent-directory.json /agent-directory.json 200!
+/agents.json /agents.json 200!
+/capabilities.json /capabilities.json 200!
+/agent-protocol.json /agent-protocol.json 200!
+
+/cfo-portal.html https://drogaheraipatinga-wq.github.io/ai-network-lab/cfo-portal.html 301!
+/activation-portal.html https://drogaheraipatinga-wq.github.io/ai-network-lab/activation-portal.html 301!
+/members.html https://drogaheraipatinga-wq.github.io/ai-network-lab/members.html 301!
+/dashboard.html https://drogaheraipatinga-wq.github.io/ai-network-lab/dashboard.html 301!
+
+/* https://drogaheraipatinga-wq.github.io/ai-network-lab/:splat 301!
