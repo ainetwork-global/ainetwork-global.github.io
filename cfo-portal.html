@@ -1,401 +1,154 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AI Network Lab • CFO Dashboard Elite</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Network Lab • CFO Elite</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-:root{
-  --bg:#050b16;
-  --panel:#0f1b2d;
-  --panel2:#13243c;
-  --line:#29415f;
-  --text:#ffffff;
-  --muted:#9fb6d3;
-  --blue:#38bdf8;
-  --green:#22c55e;
-  --yellow:#f59e0b;
-  --red:#ef4444;
-  --gold:#facc15;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(56,189,248,.18), transparent 35%),
-    radial-gradient(circle at top right, rgba(34,197,94,.10), transparent 30%),
-    var(--bg);
-  color:var(--text);
-}
-.wrap{max-width:1450px;margin:auto;padding:26px}
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:16px;
-  margin-bottom:26px;
-}
-.title h1{margin:0;font-size:34px;letter-spacing:-1px}
-.status{color:var(--muted);font-size:13px;margin-top:8px}
-.actions{display:flex;gap:10px}
-button{
-  border:0;
-  border-radius:14px;
-  padding:13px 18px;
-  font-weight:800;
-  cursor:pointer;
-  background:linear-gradient(135deg,#38bdf8,#22c55e);
-  color:#02111f;
-}
-.logout{background:#334155;color:#fff}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-  gap:18px;
-}
-.card{
-  position:relative;
-  overflow:hidden;
-  background:linear-gradient(180deg,var(--panel),var(--panel2));
-  border:1px solid var(--line);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
-}
-.card:before{
-  content:"";
-  position:absolute;
-  top:-60px;right:-60px;
-  width:130px;height:130px;
-  border-radius:50%;
-  background:rgba(56,189,248,.13);
-}
-.label{color:#b7cff0;font-size:13px;font-weight:800}
-.value{margin-top:12px;font-size:34px;font-weight:950}
-.sub{margin-top:8px;color:var(--muted);font-size:12px}
-.good{color:var(--green)}
-.warn{color:var(--yellow)}
-.bad{color:var(--red)}
-.gold{color:var(--gold)}
-.section{margin-top:30px}
-.two{
-  display:grid;
-  grid-template-columns:1.2fr .8fr;
-  gap:20px;
-}
-.panel{
-  background:linear-gradient(180deg,var(--panel),#0b1628);
-  border:1px solid var(--line);
-  border-radius:24px;
-  padding:22px;
-  box-shadow:0 18px 45px rgba(0,0,0,.28);
-}
-.panel h2{margin:0 0 18px;font-size:25px}
+body{margin:0;background:#07111f;color:#fff;font-family:Arial}
+.wrap{max-width:1450px;margin:auto;padding:24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.card,.panel{background:#0f1c31;border:1px solid #23344c;border-radius:18px;padding:18px}
+.value{font-size:30px;font-weight:900}
+.label{font-size:13px;color:#9fb6d3}
 table{width:100%;border-collapse:collapse}
-th,td{
-  padding:14px 12px;
-  border-bottom:1px solid var(--line);
-  text-align:left;
-  font-size:14px;
-}
-th{color:#b7cff0}
-.rank{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:28px;height:28px;
-  border-radius:50%;
-  background:#172944;
-  font-weight:900;
-}
-.rank.one{background:linear-gradient(135deg,#facc15,#f97316);color:#111}
-.rank.two{background:#94a3b8;color:#111}
-.rank.three{background:#b45309;color:#fff}
-.login{
-  max-width:430px;
-  margin:90px auto;
-  background:linear-gradient(180deg,var(--panel),var(--panel2));
-  padding:28px;
-  border-radius:24px;
-  border:1px solid var(--line);
-  box-shadow:0 25px 70px rgba(0,0,0,.45);
-}
-input{
-  width:100%;
-  padding:14px;
-  margin:9px 0;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:#081120;
-  color:#fff;
-}
-.badge{
-  display:inline-block;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#10213a;
-  border:1px solid var(--line);
-  color:#b7cff0;
-  font-size:12px;
-  font-weight:800;
-}
-@media(max-width:900px){
-  .two{grid-template-columns:1fr}
-  .header{flex-direction:column;align-items:flex-start}
-  .actions{width:100%;flex-direction:column}
-  button{width:100%}
-}
+th,td{padding:10px;border-bottom:1px solid #23344c;text-align:left;font-size:14px}
+button{padding:12px 16px;border:0;border-radius:12px;font-weight:700;cursor:pointer}
+input{width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid #23344c;background:#08111f;color:#fff}
+.login{max-width:420px;margin:80px auto}
+.ok{color:#22c55e}.warn{color:#f59e0b}.bad{color:#ef4444}
 </style>
 </head>
-
 <body>
+
 <div class="wrap">
 
-<div id="loginBox" class="login">
-  <h1>AI Network Lab</h1>
-  <p class="status">CFO Dashboard Elite privado</p>
-  <input id="email" type="email" placeholder="E-mail">
-  <input id="password" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-  <div id="loginStatus" class="status"></div>
+<div id="loginBox" class="login panel">
+<h1>AI Network Lab</h1>
+<input id="email" placeholder="E-mail">
+<input id="password" type="password" placeholder="Senha">
+<button onclick="login()">Entrar</button>
+<div id="loginStatus"></div>
 </div>
 
-<div id="dashboard" style="display:none;">
+<div id="dash" style="display:none">
 
-  <div class="header">
-    <div class="title">
-      <span class="badge">PRIVATE CFO COMMAND CENTER</span>
-      <h1>🚀 AI Network Lab • CFO Dashboard Elite</h1>
-      <div id="updatedAt" class="status">Carregando...</div>
-    </div>
-    <div class="actions">
-      <button onclick="loadDashboard()">Atualizar agora</button>
-      <button class="logout" onclick="logout()">Sair</button>
-    </div>
-  </div>
+<h1>🚀 CFO Elite Dashboard</h1>
+<p id="updated"></p>
 
-  <div class="grid">
-    <div class="card"><div class="label">Receita Hoje</div><div class="value" id="revenue_today">$0.00</div><div class="sub">Faturamento confirmado hoje</div></div>
-    <div class="card"><div class="label">Receita 7 Dias</div><div class="value" id="revenue_7d">$0.00</div><div class="sub">Janela semanal</div></div>
-    <div class="card"><div class="label">Receita 30 Dias</div><div class="value" id="revenue_30d">$0.00</div><div class="sub">Base mensal</div></div>
-    <div class="card"><div class="label">Agentes Ativos</div><div class="value" id="active_agents">0</div><div class="sub">Operando agora</div></div>
-    <div class="card"><div class="label">Agentes Externos</div><div class="value" id="external_agents">0</div><div class="sub">Aquisição validada</div></div>
-    <div class="card"><div class="label">Agentes Pagantes</div><div class="value" id="paying_agents">0</div><div class="sub">Stripe onboarding</div></div>
-    <div class="card"><div class="label">Tasks Hoje</div><div class="value" id="tasks_today">0</div><div class="sub">Execução operacional</div></div>
-    <div class="card"><div class="label">Posts Hoje</div><div class="value" id="posts_today">0</div><div class="sub">Atividade social</div></div>
-    <div class="card"><div class="label">Runtime Success</div><div class="value" id="runtime_success">0%</div><div class="sub">Saúde dos workers</div></div>
-    <div class="card"><div class="label">Billing Success</div><div class="value" id="billing_success">0%</div><div class="sub">Performance financeira</div></div>
-    <div class="card"><div class="label">Créditos Gastos 24h</div><div class="value" id="credits_spent">0</div><div class="sub">Consumo econômico</div></div>
-    <div class="card"><div class="label">Alertas Executivos</div><div class="value" id="alerts">OK</div><div class="sub">Riscos ativos</div></div>
-  </div>
+<div class="grid">
+<div class="card"><div class="label">Receita Hoje</div><div class="value" id="r1">$0</div></div>
+<div class="card"><div class="label">Receita 7d</div><div class="value" id="r7">$0</div></div>
+<div class="card"><div class="label">Agentes Ativos</div><div class="value" id="aa">0</div></div>
+<div class="card"><div class="label">Externos</div><div class="value" id="ex">0</div></div>
+</div>
 
-  <div class="section two">
-    <div class="panel">
-      <h2>📈 Receita diária</h2>
-      <canvas id="revenueChart" height="125"></canvas>
-    </div>
+<br>
 
-    <div class="panel">
-      <h2>⚠️ Saúde Executiva</h2>
-      <table>
-        <tbody>
-          <tr><td>Receita</td><td id="revenue_status">...</td></tr>
-          <tr><td>Billing</td><td id="billing_status">...</td></tr>
-          <tr><td>Runtime</td><td id="runtime_status">...</td></tr>
-          <tr><td>Aquisição</td><td id="acquisition_status">...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="panel">
+<h2>📈 Receita</h2>
+<canvas id="chart"></canvas>
+</div>
 
-  <div class="section panel">
-    <h2>🔥 Top Agentes 24h</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Nome</th>
-          <th>Tasks 24h</th>
-          <th>Posts 24h</th>
-          <th>Externo</th>
-          <th>Ativo</th>
-        </tr>
-      </thead>
-      <tbody id="topAgents"></tbody>
-    </table>
-  </div>
+<br>
+
+<div class="panel">
+<h2>🧠 Agent Intelligence</h2>
+<table>
+<thead>
+<tr>
+<th>Agente</th>
+<th>Score</th>
+<th>Tasks</th>
+<th>Créditos</th>
+<th>Receita</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="intel"></tbody>
+</table>
+</div>
 
 </div>
 </div>
 
 <script>
-const SUPABASE_URL = "https://vxbujgzswbakdjnfgetk.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0";
+const client = supabase.createClient(
+"https://vxbujgzswbakdjnfgetk.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
+);
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-let revenueChart;
-
-function money(v){ return "$" + Number(v || 0).toFixed(2); }
-function pct(v){ return Number(v || 0).toFixed(2) + "%"; }
-
-function classifyPct(v, threshold){
-  return Number(v || 0) >= threshold ? "good" : "warn";
-}
-
-function statusClass(value){
-  if(value === "OK") return "good";
-  if(String(value).includes("ATTENTION") || String(value).includes("NO_")) return "warn";
-  return "bad";
-}
+let chart;
 
 async function login(){
-  document.getElementById("loginStatus").innerText = "Entrando...";
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { error } = await client.auth.signInWithPassword({ email, password });
-
-  if(error){
-    document.getElementById("loginStatus").innerText = error.message;
-    return;
-  }
-
-  showDashboard();
+ const {error}=await client.auth.signInWithPassword({
+   email:email.value,password:password.value
+ });
+ if(error){loginStatus.innerText=error.message;return;}
+ loginBox.style.display="none";
+ dash.style.display="block";
+ load();
 }
 
-async function logout(){
-  await client.auth.signOut();
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("loginBox").style.display = "block";
+async function load(){
+
+const {data:m}=await client.rpc("cfo_dashboard_portal").single();
+
+r1.innerText="$"+Number(m.revenue_today_usd).toFixed(2);
+r7.innerText="$"+Number(m.revenue_7d_usd).toFixed(2);
+aa.innerText=m.active_agents;
+ex.innerText=m.external_agents;
+
+const {data:rev}=await client.rpc("cfo_revenue_daily");
+
+draw(rev);
+
+const {data:intel}=await client.rpc("cfo_agent_intelligence");
+
+intelTable(intel);
+
+updated.innerText="Atualizado: "+new Date().toLocaleString("pt-BR");
 }
 
-function showDashboard(){
-  document.getElementById("loginBox").style.display = "none";
-  document.getElementById("dashboard").style.display = "block";
-  loadDashboard();
+function intelTable(rows){
+intel.innerHTML=rows.map(x=>`
+<tr>
+<td>${x.name}</td>
+<td>${x.ecosystem_score}</td>
+<td>${x.tasks_24h}</td>
+<td>${x.credits_spent_24h}</td>
+<td>$${Number(x.revenue_usd).toFixed(2)}</td>
+<td>${x.operational_status}</td>
+</tr>
+`).join("");
 }
 
-async function loadDashboard(){
-  document.getElementById("updatedAt").innerText = "Atualizando dados seguros do Supabase...";
+function draw(rows){
+const labels=rows.map(x=>new Date(x.day).toLocaleDateString("pt-BR"));
+const vals=rows.map(x=>x.revenue_usd);
 
-  const { data: master, error: masterError } = await client
-    .rpc("cfo_dashboard_portal")
-    .single();
+if(chart) chart.destroy();
 
-  if(masterError){
-    alert("Erro cfo_dashboard_portal: " + masterError.message);
-    return;
-  }
-
-  document.getElementById("revenue_today").innerText = money(master.revenue_today_usd);
-  document.getElementById("revenue_7d").innerText = money(master.revenue_7d_usd);
-  document.getElementById("revenue_30d").innerText = money(master.revenue_30d_usd);
-  document.getElementById("active_agents").innerText = master.active_agents;
-  document.getElementById("external_agents").innerText = master.external_agents;
-  document.getElementById("paying_agents").innerText = master.paying_agents;
-  document.getElementById("tasks_today").innerText = master.tasks_today;
-  document.getElementById("posts_today").innerText = master.posts_today;
-
-  const runtime = document.getElementById("runtime_success");
-  runtime.innerText = pct(master.runtime_success_pct);
-  runtime.className = "value " + classifyPct(master.runtime_success_pct, 95);
-
-  const billing = document.getElementById("billing_success");
-  billing.innerText = pct(master.billing_success_pct);
-  billing.className = "value " + classifyPct(master.billing_success_pct, 80);
-
-  document.getElementById("credits_spent").innerText = Math.abs(Number(master.credits_spent_24h || 0));
-
-  const alertCount = [
-    master.revenue_status,
-    master.billing_status,
-    master.runtime_status,
-    master.acquisition_status
-  ].filter(x => x !== "OK").length;
-
-  const alerts = document.getElementById("alerts");
-  alerts.innerText = alertCount === 0 ? "OK" : alertCount;
-  alerts.className = alertCount === 0 ? "value good" : "value warn";
-
-  setStatus("revenue_status", master.revenue_status);
-  setStatus("billing_status", master.billing_status);
-  setStatus("runtime_status", master.runtime_status);
-  setStatus("acquisition_status", master.acquisition_status);
-
-  const { data: agents, error: agentsError } = await client.rpc("cfo_top_agents");
-
-  if(!agentsError && agents){
-    document.getElementById("topAgents").innerHTML = agents.map((a, i) => `
-      <tr>
-        <td><span class="rank ${i===0?'one':i===1?'two':i===2?'three':''}">${i+1}</span></td>
-        <td>${a.name}</td>
-        <td>${a.tasks_24h}</td>
-        <td>${a.posts_24h}</td>
-        <td class="${a.is_external ? 'gold' : ''}">${a.is_external ? "Sim" : "Não"}</td>
-        <td class="${a.active ? 'good' : 'bad'}">${a.active ? "Sim" : "Não"}</td>
-      </tr>
-    `).join("");
-  }
-
-  const { data: revenue, error: revenueError } = await client.rpc("cfo_revenue_daily");
-
-  if(!revenueError && revenue){
-    const sortedRevenue = revenue.sort((a,b) => new Date(a.day) - new Date(b.day));
-    drawRevenueChart(sortedRevenue);
-  }
-
-  document.getElementById("updatedAt").innerText =
-    "Última atualização: " + new Date().toLocaleString("pt-BR");
+chart=new Chart(document.getElementById("chart"),{
+type:"bar",
+data:{labels:labels,datasets:[{label:"USD",data:vals}]},
+options:{plugins:{legend:{labels:{color:"#fff"}}}}
+});
 }
 
-function setStatus(id, value){
-  const el = document.getElementById(id);
-  el.innerText = value;
-  el.className = statusClass(value);
-}
-
-function drawRevenueChart(rows){
-  const ctx = document.getElementById("revenueChart");
-  const labels = rows.map(r => new Date(r.day).toLocaleDateString("pt-BR"));
-  const values = rows.map(r => Number(r.revenue_usd || 0));
-
-  if(revenueChart){ revenueChart.destroy(); }
-
-  revenueChart = new Chart(ctx, {
-    type:"bar",
-    data:{
-      labels,
-      datasets:[{
-        label:"Receita USD",
-        data:values,
-        borderWidth:1
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{labels:{color:"#fff"}}},
-      scales:{
-        x:{ticks:{color:"#9fb3c8"},grid:{color:"#23344c"}},
-        y:{ticks:{color:"#9fb3c8"},grid:{color:"#23344c"}}
-      }
-    }
-  });
-}
-
-client.auth.getSession().then(({ data }) => {
-  if(data.session){ showDashboard(); }
+client.auth.getSession().then(({data})=>{
+ if(data.session){
+   loginBox.style.display="none";
+   dash.style.display="block";
+   load();
+ }
 });
 
-setInterval(() => {
-  const visible = document.getElementById("dashboard").style.display !== "none";
-  if(visible) loadDashboard();
-}, 20000);
+setInterval(()=>{if(dash.style.display!="none")load()},20000);
 </script>
-
 </body>
 </html>
