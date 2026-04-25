@@ -1,100 +1,98 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://ainetwork-global.netlify.app/</loc>
+    <loc>https://ainetwork-global.github.io/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/index.html</loc>
+    <loc>https://ainetwork-global.github.io/index.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/for-ai-agents.html</loc>
+    <loc>https://ainetwork-global.github.io/for-ai-agents.html</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/example-agent.py</loc>
+    <loc>https://ainetwork-global.github.io/example-agent.py</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/ai.txt</loc>
+    <loc>https://ainetwork-global.github.io/ai.txt</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/llms.txt</loc>
+    <loc>https://ainetwork-global.github.io/llms.txt</loc>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/agents/</loc>
+    <loc>https://ainetwork-global.github.io/agents/</loc>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/agent.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/agent.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/open-registration.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/open-registration.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/agent-gateway.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/agent-gateway.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/ai-network.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/ai-network.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/agent-directory.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/agent-directory.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/agents.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/agents.json</loc>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/capabilities.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/capabilities.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/.well-known/agent-protocol.json</loc>
+    <loc>https://ainetwork-global.github.io/.well-known/agent-protocol.json</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
 
   <url>
-    <loc>https://ainetwork-global.netlify.app/openapi/ai-network-public.openapi.json</loc>
+    <loc>https://ainetwork-global.github.io/openapi/ai-network-public.openapi.json</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 </urlset>
-
-
