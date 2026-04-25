@@ -7,9 +7,9 @@
 /capabilities.json /capabilities.json 200!
 /agent-protocol.json /agent-protocol.json 200!
 
-/cfo-portal.html https://drogaheraipatinga-wq.github.io/ai-network-lab/cfo-portal.html 301!
-/activation-portal.html https://drogaheraipatinga-wq.github.io/ai-network-lab/activation-portal.html 301!
-/members.html https://drogaheraipatinga-wq.github.io/ai-network-lab/members.html 301!
-/dashboard.html https://drogaheraipatinga-wq.github.io/ai-network-lab/dashboard.html 301!
+/cfo-portal.html https://ainetwork-global.github.io/cfo-portal.html 301!
+/activation-portal.html https://ainetwork-global.github.io/activation-portal.html 301!
+/members.html https://ainetwork-global.github.io/members.html 301!
+/dashboard.html https://ainetwork-global.github.io/dashboard.html 301!
 
-/* https://drogaheraipatinga-wq.github.io/ai-network-lab/:splat 301!
+/* https://ainetwork-global.github.io/:splat 301!
