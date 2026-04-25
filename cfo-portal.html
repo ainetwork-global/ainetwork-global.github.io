@@ -27,6 +27,7 @@ input{width:100%;padding:12px;margin:8px 0;border-radius:12px;border:1px solid #
 .ok{color:#22c55e}.warn{color:#f59e0b}.bad{color:#ef4444}
 h1,h2{margin-top:0}
 .error{color:#ef4444;font-size:13px;margin-top:8px}
+.small{color:#9fb6d3;font-size:13px}
 @media(max-width:800px){.top{flex-direction:column;align-items:flex-start}.actions{width:100%;flex-direction:column}button{width:100%}}
 </style>
 </head>
@@ -36,6 +37,7 @@ h1,h2{margin-top:0}
 
 <div id="loginBox" class="login panel">
 <h1>AI Network Lab</h1>
+<p class="small">CFO Elite Dashboard privado</p>
 <input id="email" placeholder="E-mail">
 <input id="password" type="password" placeholder="Senha">
 <button class="refresh-btn" onclick="login()">Entrar</button>
@@ -45,14 +47,14 @@ h1,h2{margin-top:0}
 <div id="dash" style="display:none">
 
 <div class="top">
-<div>
-<h1>🚀 CFO Elite Dashboard</h1>
-<p id="updated">Carregando...</p>
-</div>
-<div class="actions">
-<button id="refreshBtn" class="refresh-btn" onclick="load()">🟢 Atualizar agora</button>
-<button class="logout" onclick="logout()">Sair</button>
-</div>
+  <div>
+    <h1>🚀 CFO Elite Dashboard</h1>
+    <p id="updated">Carregando...</p>
+  </div>
+  <div class="actions">
+    <button id="refreshBtn" class="refresh-btn" onclick="load()">🟢 Atualizar agora</button>
+    <button class="logout" onclick="logout()">Sair</button>
+  </div>
 </div>
 
 <div class="panel">
@@ -65,6 +67,7 @@ h1,h2{margin-top:0}
 <div class="card"><div class="label">Stripe Hoje</div><div class="value" id="gr5">0</div></div>
 <div class="card"><div class="label">Stripe 7 Dias</div><div class="value" id="gr6">0</div></div>
 </div>
+<div id="growthError" class="error"></div>
 </div>
 
 <br>
@@ -76,53 +79,251 @@ h1,h2{margin-top:0}
 <div class="card"><div class="label">Agentes Externos</div><div class="value" id="ex">0</div></div>
 </div>
 
-<!-- restante do dashboard permanece -->
+<br>
+
+<div class="panel">
+<h2>🩺 Saúde do Sistema</h2>
+<table>
+<tbody>
+<tr><td>Status Geral</td><td id="sys_status">...</td></tr>
+<tr><td>Tasks 24h</td><td id="sys_tasks">0</td></tr>
+<tr><td>Falhas Runtime</td><td id="sys_fail">0</td></tr>
+<tr><td>Problemas Billing</td><td id="sys_bill">0</td></tr>
+<tr><td>Eventos Ledger</td><td id="sys_ledger">0</td></tr>
+</tbody>
+</table>
+<div id="healthError" class="error"></div>
+</div>
+
+<br>
+
+<div class="panel">
+<h2>📈 Receita</h2>
+<canvas id="chart"></canvas>
+<div id="chartError" class="error"></div>
+</div>
+
+<br>
+
+<div class="panel">
+<h2>🧠 Agent Intelligence</h2>
+<table>
+<thead>
+<tr>
+<th>Agente</th>
+<th>Score</th>
+<th>Tasks</th>
+<th>Créditos</th>
+<th>Receita</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="intelBody">
+<tr><td colspan="6">Carregando...</td></tr>
+</tbody>
+</table>
+<div id="intelError" class="error"></div>
+</div>
+
 </div>
 </div>
 
 <script>
 const client = supabase.createClient(
-"https://vxbujgzswbakdjnfgetk.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  "https://vxbujgzswbakdjnfgetk.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
 );
 
+let chart = null;
+
 async function login(){
-const {error}=await client.auth.signInWithPassword({
-email:email.value,password:password.value
-});
-if(error){loginStatus.innerText=error.message;return;}
-loginBox.style.display="none";
-dash.style.display="block";
-load();
+  document.getElementById("loginStatus").innerText = "Entrando...";
+
+  const { error } = await client.auth.signInWithPassword({
+    email: document.getElementById("email").value.trim(),
+    password: document.getElementById("password").value
+  });
+
+  if(error){
+    document.getElementById("loginStatus").innerText = error.message;
+    return;
+  }
+
+  document.getElementById("loginStatus").innerText = "";
+  document.getElementById("loginBox").style.display = "none";
+  document.getElementById("dash").style.display = "block";
+  await load();
 }
 
 async function logout(){
-await client.auth.signOut();
-dash.style.display="none";
-loginBox.style.display="block";
+  await client.auth.signOut();
+  document.getElementById("dash").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
 }
 
 async function load(){
+  const btn = document.getElementById("refreshBtn");
 
-const {data:g}=await client.rpc("cfo_growth_radar").single();
+  if(btn){
+    btn.innerText = "🟢 Atualizando...";
+    btn.disabled = true;
+  }
 
-gr1.innerText=g.external_today;
-gr2.innerText=g.external_7d;
-gr3.innerText=g.external_total;
-gr4.innerText=g.external_active;
-gr5.innerText=g.stripe_onboarding_today;
-gr6.innerText=g.stripe_onboarding_7d;
+  document.getElementById("updated").innerText = "Atualizando...";
 
-updated.innerText="Atualizado: "+new Date().toLocaleString("pt-BR");
+  await loadGrowth();
+  await loadMain();
+  await loadHealth();
+  await loadRevenue();
+  await loadIntelligence();
+
+  document.getElementById("updated").innerText =
+    "Atualizado: " + new Date().toLocaleString("pt-BR");
+
+  if(btn){
+    btn.innerText = "🟢 Atualizar agora";
+    btn.disabled = false;
+  }
+}
+
+async function loadGrowth(){
+  const { data, error } = await client.rpc("cfo_growth_radar").single();
+
+  if(error){
+    document.getElementById("growthError").innerText = error.message;
+    return;
+  }
+
+  document.getElementById("gr1").innerText = data.external_today || 0;
+  document.getElementById("gr2").innerText = data.external_7d || 0;
+  document.getElementById("gr3").innerText = data.external_total || 0;
+  document.getElementById("gr4").innerText = data.external_active || 0;
+  document.getElementById("gr5").innerText = data.stripe_onboarding_today || 0;
+  document.getElementById("gr6").innerText = data.stripe_onboarding_7d || 0;
+
+  document.getElementById("growthError").innerText = "";
+}
+
+async function loadMain(){
+  const { data, error } = await client.rpc("cfo_dashboard_portal").single();
+
+  if(error){
+    alert("Erro CFO principal: " + error.message);
+    return;
+  }
+
+  document.getElementById("r1").innerText = "$" + Number(data.revenue_today_usd || 0).toFixed(2);
+  document.getElementById("r7").innerText = "$" + Number(data.revenue_7d_usd || 0).toFixed(2);
+  document.getElementById("aa").innerText = data.active_agents || 0;
+  document.getElementById("ex").innerText = data.external_agents || 0;
+}
+
+async function loadHealth(){
+  const { data, error } = await client.rpc("cfo_system_health").single();
+
+  if(error){
+    document.getElementById("healthError").innerText = error.message;
+    return;
+  }
+
+  const status = data.system_status || "UNKNOWN";
+  const statusEl = document.getElementById("sys_status");
+
+  statusEl.innerText = status;
+  statusEl.className =
+    status === "HEALTHY" ? "ok value" :
+    status.includes("RISK") ? "bad value" :
+    "warn value";
+
+  document.getElementById("sys_tasks").innerText = data.tasks_24h || 0;
+  document.getElementById("sys_fail").innerText = data.tasks_failed_24h || 0;
+  document.getElementById("sys_bill").innerText = data.billing_problems_24h || 0;
+  document.getElementById("sys_ledger").innerText = data.ledger_events_24h || 0;
+  document.getElementById("healthError").innerText = "";
+}
+
+async function loadRevenue(){
+  const { data, error } = await client.rpc("cfo_revenue_daily");
+
+  if(error){
+    document.getElementById("chartError").innerText = error.message;
+    return;
+  }
+
+  const rows = (data || []).sort((a,b) => new Date(a.day) - new Date(b.day));
+  const labels = rows.map(x => new Date(x.day).toLocaleDateString("pt-BR"));
+  const values = rows.map(x => Number(x.revenue_usd || 0));
+
+  if(chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("chart"),{
+    type:"bar",
+    data:{
+      labels,
+      datasets:[{
+        label:"Receita USD",
+        data:values
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{legend:{labels:{color:"#fff"}}},
+      scales:{
+        x:{ticks:{color:"#9fb6d3"},grid:{color:"#23344c"}},
+        y:{ticks:{color:"#9fb6d3"},grid:{color:"#23344c"}}
+      }
+    }
+  });
+
+  document.getElementById("chartError").innerText = "";
+}
+
+async function loadIntelligence(){
+  const tbody = document.getElementById("intelBody");
+  tbody.innerHTML = `<tr><td colspan="6">Carregando inteligência...</td></tr>`;
+
+  const { data, error } = await client.rpc("cfo_agent_intelligence");
+
+  if(error){
+    document.getElementById("intelError").innerText = error.message;
+    tbody.innerHTML = `<tr><td colspan="6">Erro ao carregar Agent Intelligence</td></tr>`;
+    return;
+  }
+
+  const rows = data || [];
+
+  if(rows.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6">Nenhum agente retornado pela função.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(x => `
+    <tr>
+      <td>${x.name || "-"}</td>
+      <td>${Number(x.ecosystem_score || 0).toFixed(1)}</td>
+      <td>${x.tasks_24h || 0}</td>
+      <td>${x.credits_spent_24h || 0}</td>
+      <td>$${Number(x.revenue_usd || 0).toFixed(2)}</td>
+      <td>${x.operational_status || "-"}</td>
+    </tr>
+  `).join("");
+
+  document.getElementById("intelError").innerText = "";
 }
 
 client.auth.getSession().then(({data})=>{
-if(data.session){
-loginBox.style.display="none";
-dash.style.display="block";
-load();
-}
+  if(data.session){
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dash").style.display = "block";
+    load();
+  }
 });
+
+setInterval(()=>{
+  if(document.getElementById("dash").style.display !== "none"){
+    load();
+  }
+},20000);
 </script>
 
 </body>
