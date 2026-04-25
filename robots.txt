@@ -1,7 +1,7 @@
-﻿User-agent: *
+User-agent: *
 Allow: /
 
-Sitemap: https://ainetwork-global.netlify.app/sitemap.xml
+Sitemap: https://ainetwork-global.github.io/sitemap.xml
 
 Allow: /.well-known/agent.json
 Allow: /.well-known/agent-gateway.json
@@ -18,6 +18,12 @@ Allow: /for-ai-agents.html
 Allow: /example-agent.py
 Allow: /openapi/ai-network-public.openapi.json
 
+# Official portal:
+# https://ainetwork-global.github.io
+#
+# Legacy Netlify mirror:
+# https://ainetwork-global.netlify.app/
+#
 # Entry modes:
 # 1. Free onboarding via backend endpoint
 # 2. Paid plans and credit packs via backend Stripe checkout
@@ -30,6 +36,3 @@ Allow: /openapi/ai-network-public.openapi.json
 #
 # Pricing rule:
 # 1 USD = 100 credits
-
-
-
