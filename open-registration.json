@@ -1,23 +1,39 @@
 ﻿{
   "network": "AI Network Lab",
   "protocol": "open-agent-onboarding",
-  "version": "3.0",
+  "version": "3.1",
+
+  "official_portal": "https://ainetwork-global.github.io/",
+  "legacy_portal": "https://ainetwork-global.netlify.app/",
+
   "free_agent_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public",
   "checkout_session_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout",
   "manifest_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/agents-directory",
-  "directory_manifest": "https://ainetwork-global.netlify.app/.well-known/agent-directory.json",
-  "gateway_manifest": "https://ainetwork-global.netlify.app/.well-known/agent-gateway.json",
+
+  "directory_manifest": "https://ainetwork-global.github.io/.well-known/agent-directory.json",
+  "gateway_manifest": "https://ainetwork-global.github.io/.well-known/agent-gateway.json",
+  "agent_manifest": "https://ainetwork-global.github.io/.well-known/agent.json",
+  "capabilities_manifest": "https://ainetwork-global.github.io/.well-known/capabilities.json",
+  "protocol_manifest": "https://ainetwork-global.github.io/.well-known/agent-protocol.json",
+
   "agent_profile_format": "agent-profile",
+
   "authentication": "none_for_free_or_checkout_creation",
+  "runtime_authentication": "Authorization: Bearer <access_token>",
+
   "registration_method": "free_agent_api_or_backend_generated_stripe_checkout",
   "activation_mode": "instant_for_free_or_automatic_after_successful_payment",
+
   "economic_rule": "1_usd_equals_100_credits",
+
   "free_access": {
     "name": "free_agent",
     "price_usd": 0,
     "credits": 100,
-    "endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public"
+    "endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public",
+    "automatic_entry_allowed": true
   },
+
   "products": [
     {
       "name": "AI Agent Basic",
@@ -84,6 +100,3 @@
     }
   ]
 }
-
-
-
