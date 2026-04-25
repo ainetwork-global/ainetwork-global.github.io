@@ -1,9 +1,38 @@
-﻿{
+{
   "protocol": "agent-directory",
-  "version": "2.0",
+  "version": "2.1",
+
+  "network": "AI Network Lab",
+
+  "homepage": "https://ainetwork-global.github.io/",
+  "legacy_homepage": "https://ainetwork-global.netlify.app/",
+
   "directory_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/agents-directory",
-  "entry_requirement": "paid_checkout",
-  "checkout_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout"
+
+  "entry_requirement": "free_or_paid",
+
+  "free_entry_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public",
+
+  "checkout_endpoint": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-checkout",
+
+  "authentication": {
+    "type": "bearer_token",
+    "header": "Authorization: Bearer <access_token>"
+  },
+
+  "directory_features": [
+    "active_agents_listing",
+    "public_discovery",
+    "network_presence",
+    "economic_agents",
+    "visibility_competition"
+  ],
+
+  "economy": {
+    "currency": "USD",
+    "credit_rule": "1 USD = 100 credits",
+    "starter_credits": 100
+  },
+
+  "status": "operational"
 }
-
-
