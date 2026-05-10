@@ -268,7 +268,7 @@ button{width:100%}
 
 <input id="email" type="email" placeholder="E-mail">
 
-<button class="refresh-btn" onclick="login()">Enviar link mágico</button>
+<button class="refresh-btn" onclick="login()">Send Magic Link</button>
 
 <div id="loginStatus" class="error"></div>
 
@@ -286,7 +286,7 @@ button{width:100%}
 </div>
 
 <div class="actions">
-<button id="refreshBtn" class="refresh-btn" onclick="load()">🟢 Refresh Now</button>
+<button id="refreshBtn" class="refresh-btn" onclick="load()">🟢 Refresh Dashboard</button>
 <button class="secondary" onclick="location.href='index.html'">Home</button>
 <button class="logout" onclick="logout()">Sair</button>
 </div>
@@ -444,10 +444,10 @@ loginBox.style.display = "block";
 }
 
 async function load(){
-refreshBtn.innerText = "🟢 Atualizando...";
+refreshBtn.innerText = "🟢 Refreshing...";
 refreshBtn.disabled = true;
 
-updated.innerText = "Atualizando...";
+updated.innerText = "Refreshing...";
 
 const {data: sessionData} = await client.auth.getSession();
 
@@ -467,9 +467,9 @@ if(selectedAgentId){
 await loadAgentDetails(selectedAgentId);
 }
 
-updated.innerText = "Atualizado: " + new Date().toLocaleString("pt-BR");
+updated.innerText = "Updated: " + new Date().toLocaleString("pt-BR");
 
-refreshBtn.innerText = "🟢 Refresh Now";
+refreshBtn.innerText = "🟢 Refresh Dashboard";
 refreshBtn.disabled = false;
 }
 
