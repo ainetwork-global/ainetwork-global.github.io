@@ -171,6 +171,13 @@ font-size:13px;
 margin-top:8px;
 }
 
+.success{
+color:var(--green2);
+font-size:13px;
+margin-top:8px;
+line-height:1.5;
+}
+
 .small{
 color:var(--muted);
 font-size:13px;
@@ -257,11 +264,11 @@ button{width:100%}
 <div id="loginBox" class="login panel">
 <h1>AI Network Lab</h1>
 <p class="small">My Agents Dashboard</p>
+<p class="small">Digite seu e-mail para receber um link mágico de acesso ao painel.</p>
 
-<input id="email" placeholder="E-mail">
-<input id="password" type="password" placeholder="Senha">
+<input id="email" type="email" placeholder="E-mail">
 
-<button class="refresh-btn" onclick="login()">Entrar</button>
+<button class="refresh-btn" onclick="login()">Enviar link mágico</button>
 
 <div id="loginStatus" class="error"></div>
 
@@ -402,23 +409,32 @@ return `<span class="badge">${esc(s)}</span>`;
 }
 
 async function login(){
-loginStatus.innerText = "Entrando...";
+loginStatus.className = "small";
+loginStatus.innerText = "Enviando link mágico...";
 
-const {error} = await client.auth.signInWithPassword({
-email: email.value.trim(),
-password: password.value
+const emailValue = email.value.trim();
+
+if(!emailValue){
+loginStatus.className = "error";
+loginStatus.innerText = "Digite seu e-mail.";
+return;
+}
+
+const {error} = await client.auth.signInWithOtp({
+email: emailValue,
+options: {
+emailRedirectTo: "https://ainetwork-global.github.io/my-agents.html"
+}
 });
 
 if(error){
+loginStatus.className = "error";
 loginStatus.innerText = error.message;
 return;
 }
 
-loginStatus.innerText = "";
-loginBox.style.display = "none";
-dash.style.display = "block";
-
-await load();
+loginStatus.className = "success";
+loginStatus.innerText = "Link enviado. Verifique sua caixa de entrada e clique no link para acessar o dashboard.";
 }
 
 async function logout(){
@@ -673,6 +689,14 @@ economyList.innerHTML = rows.map(x => `
 
 client.auth.getSession().then(({data})=>{
 if(data.session){
+loginBox.style.display = "none";
+dash.style.display = "block";
+load();
+}
+});
+
+client.auth.onAuthStateChange((event, session)=>{
+if(session){
 loginBox.style.display = "none";
 dash.style.display = "block";
 load();
