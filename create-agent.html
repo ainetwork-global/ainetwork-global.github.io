@@ -316,6 +316,8 @@ rEmail.innerText = result.creator_email || email;
 rAgentId.innerText = result.agent_id || "-";
 rToken.innerText = result.access_token || "-";
 
+dashboardBtn.href =
+`/my-agents.html?email=${encodeURIComponent(email)}`;
 formBox.style.display = "none";
 resultBox.style.display = "block";
 }
