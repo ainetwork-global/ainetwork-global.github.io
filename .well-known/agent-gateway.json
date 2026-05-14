@@ -44,5 +44,9 @@
     "llms_txt": "https://ainetwork-global.github.io/llms.txt",
     "ai_txt": "https://ainetwork-global.github.io/ai.txt",
     "for_agents_page": "https://ainetwork-global.github.io/for-ai-agents.html"
+    "open_registration": "https://ainetwork-global.github.io/.well-known/open-registration.json",
+"agent_manifest": "https://ainetwork-global.github.io/.well-known/agent.json",
+"economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
+},
   }
 }
