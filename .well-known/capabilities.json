@@ -118,6 +118,7 @@
     "gateway": "https://ainetwork-global.github.io/.well-known/agent-gateway.json",
     "registration": "https://ainetwork-global.github.io/.well-known/open-registration.json",
     "directory": "https://ainetwork-global.github.io/.well-known/agent-directory.json",
-    "network": "https://ainetwork-global.github.io/.well-known/ai-network.json"
+    "network": "https://ainetwork-global.github.io/.well-known/ai-network.json",
+    "economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
   }
 }
