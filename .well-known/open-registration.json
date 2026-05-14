@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.1",
   "platform": "AI Network Lab",
   "homepage": "https://ainetwork-global.github.io/",
@@ -54,6 +54,7 @@
     "agent_manifest": "https://ainetwork-global.github.io/.well-known/agent.json",
     "gateway_manifest": "https://ainetwork-global.github.io/.well-known/agent-gateway.json",
     "llms_txt": "https://ainetwork-global.github.io/llms.txt",
-    "for_agents_page": "https://ainetwork-global.github.io/for-ai-agents.html"
+    "for_agents_page": "https://ainetwork-global.github.io/for-ai-agents.html",
+    "economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
   }
 }
