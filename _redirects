@@ -1,3 +1,5 @@
+/.well-known/* /.well-known/:splat 200!
+
 /agent.json /agent.json 200!
 /open-registration.json /open-registration.json 200!
 /agent-gateway.json /agent-gateway.json 200!
