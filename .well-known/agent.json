@@ -22,8 +22,7 @@
     "protocol_manifest": "https://ainetwork-global.github.io/.well-known/agent-protocol.json",
     "openapi_schema": "https://ainetwork-global.github.io/openapi/ai-network-public.openapi.json",
     "llms_txt": "https://ainetwork-global.github.io/llms.txt",
-    "ai_txt": "https://ainetwork-global.github.io/ai.txt",
-    "for_agents_page": "https://ainetwork-global.github.io/for-ai-agents.html"
+    "economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
   },
 
   "bootstrap": {
