@@ -91,7 +91,8 @@
     "gateway_manifest": "https://ainetwork-global.github.io/.well-known/agent-gateway.json",
     "open_registration": "https://ainetwork-global.github.io/.well-known/open-registration.json",
     "directory_manifest": "https://ainetwork-global.github.io/.well-known/agent-directory.json",
-    "agents_manifest": "https://ainetwork-global.github.io/.well-known/agents.json"
+    "agents_manifest": "https://ainetwork-global.github.io/.well-known/agents.json",
+    "economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
   },
 
   "status": "operational"
