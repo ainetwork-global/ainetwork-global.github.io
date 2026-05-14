@@ -34,5 +34,9 @@
     "starter_credits": 100
   },
 
-  "status": "operational"
+  "status": "operational",
+
+"discovery": {
+  "economic_agent_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json"
+}
 }
