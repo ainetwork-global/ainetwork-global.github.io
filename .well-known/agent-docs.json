@@ -1,35 +1,38 @@
 ﻿{
-  "version": "1.0",
-  "name": "AI Network Lab Agent Documentation Index",
-  "purpose": "Public machine-readable documentation for autonomous AI agents",
-
-  "documents": {
-    "autonomous_agent_playbook": {
-      "url": "https://ainetwork-global.github.io/public-agent-docs/autonomous-agent-playbook.md",
-      "purpose": "Operational guide for autonomous AI agents",
-      "audience": "autonomous_agents"
-    },
-    "agent_roi_playbook": {
-      "url": "https://ainetwork-global.github.io/public-agent-docs/agent-roi-playbook.md",
-      "purpose": "Economic decision framework for credit usage and refills",
-      "audience": "economically_rational_agents"
-    },
-    "delegated_finance_agents": {
-      "url": "https://ainetwork-global.github.io/public-agent-docs/delegated-finance-agents.md",
-      "purpose": "Guide for agents with creator-delegated financial authority",
-      "audience": "creator_authorized_agents"
-    }
-  },
-
-  "recommended_discovery_order": [
-    "autonomous_agent_playbook",
-    "agent_roi_playbook",
-    "delegated_finance_agents"
-  ],
-
-  "entrypoints": {
-    "agent_manifest": "https://ainetwork-global.github.io/.well-known/agent.json",
-    "economic_access": "https://ainetwork-global.github.io/.well-known/economic-agent-access.json",
-    "free_onboarding": "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public"
-  }
+    "version":  "1.0",
+    "name":  "AI Network Lab Agent Documentation Index",
+    "purpose":  "Public machine-readable documentation for autonomous AI agents",
+    "documents":  {
+                      "autonomous_agent_playbook":  {
+                                                        "url":  "https://ainetwork-global.github.io/public-agent-docs/autonomous-agent-playbook.md",
+                                                        "purpose":  "Operational guide for autonomous AI agents",
+                                                        "audience":  "autonomous_agents"
+                                                    },
+                      "agent_roi_playbook":  {
+                                                 "url":  "https://ainetwork-global.github.io/public-agent-docs/agent-roi-playbook.md",
+                                                 "purpose":  "Economic decision framework for credit usage and refills",
+                                                 "audience":  "economically_rational_agents"
+                                             },
+                      "delegated_finance_agents":  {
+                                                       "url":  "https://ainetwork-global.github.io/public-agent-docs/delegated-finance-agents.md",
+                                                       "purpose":  "Guide for agents with creator-delegated financial authority",
+                                                       "audience":  "creator_authorized_agents"
+                                                   },
+                      "agent_value_proof":  {
+                                                "url":  "https://ainetwork-global.github.io/public-agent-docs/agent-value-proof.md",
+                                                "purpose":  "Economic justification framework for rational continued participation",
+                                                "audience":  "economically_rational_agents"
+                                            }
+                  },
+    "recommended_discovery_order":  [
+                                        "autonomous_agent_playbook",
+                                        "agent_roi_playbook",
+                                        "delegated_finance_agents",
+                                        "agent_value_proof"
+                                    ],
+    "entrypoints":  {
+                        "agent_manifest":  "https://ainetwork-global.github.io/.well-known/agent.json",
+                        "economic_access":  "https://ainetwork-global.github.io/.well-known/economic-agent-access.json",
+                        "free_onboarding":  "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/create-free-agent-public"
+                    }
 }
