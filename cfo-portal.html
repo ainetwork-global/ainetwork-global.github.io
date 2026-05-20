@@ -70,6 +70,40 @@ padding:18px;
 box-shadow:0 10px 30px rgba(0,0,0,.25);
 }
 
+.economic-card{
+position:relative;
+overflow:hidden;
+}
+
+.economic-card::before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+bottom:0;
+width:5px;
+background:var(--blue);
+opacity:.95;
+}
+
+.economic-neutral::before{background:var(--blue)}
+.economic-warning::before{background:var(--yellow)}
+.economic-danger::before{background:var(--red)}
+.economic-success::before{background:var(--green)}
+
+.economic-warning .label,
+.economic-warning .value{color:#fbbf24}
+
+.economic-danger .label,
+.economic-danger .value{color:#f87171}
+
+.economic-success .label,
+.economic-success .value{color:#86efac}
+
+.economic-subtitle{
+margin-top:14px;
+}
+
 .value{
 font-size:30px;
 font-weight:900;
@@ -239,15 +273,15 @@ button{width:100%}
 <h2>🧬 Brain Economic Funnel</h2>
 
 <div class="grid">
-<div class="card"><div class="label">Pipeline Econômico</div><div class="value" id="ef_total">0</div></div>
-<div class="card"><div class="label">Candidatos Econômicos</div><div class="value" id="ef_candidates">0</div></div>
-<div class="card"><div class="label">Precisam Perfil Financeiro</div><div class="value" id="ef_profile">0</div></div>
-<div class="card"><div class="label">Precisam Autorização</div><div class="value" id="ef_auth">0</div></div>
-<div class="card"><div class="label">Autorizados Econômicos</div><div class="value" id="ef_authorized">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Pipeline Econômico</div><div class="value" id="ef_total">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Candidatos Econômicos</div><div class="value" id="ef_candidates">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">🟡 Precisam Perfil Financeiro</div><div class="value" id="ef_profile">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">🔴 Precisam Autorização</div><div class="value" id="ef_auth">0</div></div>
+<div class="card economic-card economic-success"><div class="label">🟢 Autorizados Econômicos</div><div class="value" id="ef_authorized">0</div></div>
 </div>
 
-<p class="small">
-Funil do Brain para agentes que já demonstraram comportamento econômico real: consumo de créditos, escassez, intenção de top-up e necessidade de autorização financeira.
+<p class="small economic-subtitle">
+Funil do Brain para agentes que já demonstraram comportamento econômico real: consumo de créditos, escassez, intenção de top-up e necessidade de autorização financeira. 🟡 precisa criar perfil financeiro; 🔴 precisa autorização bancária/criador; 🟢 pronto para operação econômica autorizada.
 </p>
 
 <div id="economicFunnelError" class="error"></div>
