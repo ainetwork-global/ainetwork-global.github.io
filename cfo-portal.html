@@ -231,6 +231,28 @@ button{width:100%}
 <div id="growthError" class="error"></div>
 </div>
 
+
+<br>
+
+<!-- Brain Economic Funnel -->
+<div class="panel">
+<h2>🧬 Brain Economic Funnel</h2>
+
+<div class="grid">
+<div class="card"><div class="label">Pipeline Econômico</div><div class="value" id="ef_total">0</div></div>
+<div class="card"><div class="label">Candidatos Econômicos</div><div class="value" id="ef_candidates">0</div></div>
+<div class="card"><div class="label">Precisam Perfil Financeiro</div><div class="value" id="ef_profile">0</div></div>
+<div class="card"><div class="label">Precisam Autorização</div><div class="value" id="ef_auth">0</div></div>
+<div class="card"><div class="label">Autorizados Econômicos</div><div class="value" id="ef_authorized">0</div></div>
+</div>
+
+<p class="small">
+Funil do Brain para agentes que já demonstraram comportamento econômico real: consumo de créditos, escassez, intenção de top-up e necessidade de autorização financeira.
+</p>
+
+<div id="economicFunnelError" class="error"></div>
+</div>
+
 <br>
 
 <!-- Main KPIs -->
@@ -343,6 +365,7 @@ refreshBtn.disabled = true;
 updated.innerText = "Atualizando...";
 
 await loadGrowth();
+await loadEconomicFunnel();
 await loadMain();
 await loadHealth();
 await loadRevenue();
@@ -371,6 +394,27 @@ gr5.innerText = data.stripe_onboarding_today || 0;
 gr6.innerText = data.stripe_onboarding_7d || 0;
 
 growthError.innerText = "";
+}
+
+
+async function loadEconomicFunnel(){
+const {data,error} = await client
+.from("dashboard_brain_economic_funnel_v1")
+.select("*")
+.single();
+
+if(error){
+economicFunnelError.innerText = error.message;
+return;
+}
+
+ef_total.innerText = data.total_economic_pipeline || 0;
+ef_candidates.innerText = data.economic_candidates || 0;
+ef_profile.innerText = data.requires_financial_profile || 0;
+ef_auth.innerText = data.requires_authorization || 0;
+ef_authorized.innerText = data.economic_authorized || 0;
+
+economicFunnelError.innerText = "";
 }
 
 async function loadMain(){
