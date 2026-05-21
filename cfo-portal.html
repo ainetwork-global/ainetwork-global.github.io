@@ -104,6 +104,47 @@ opacity:.95;
 margin-top:14px;
 }
 
+.wallet-table-wrap{
+overflow-x:auto;
+margin-top:14px;
+}
+
+.status-pill{
+display:inline-block;
+padding:5px 9px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+border:1px solid rgba(255,255,255,.12);
+white-space:nowrap;
+}
+
+.status-completed{
+background:rgba(34,197,94,.12);
+color:#86efac;
+border-color:rgba(34,197,94,.35);
+}
+
+.status-pending{
+background:rgba(245,158,11,.12);
+color:#fbbf24;
+border-color:rgba(245,158,11,.35);
+}
+
+.status-required{
+background:rgba(239,68,68,.12);
+color:#f87171;
+border-color:rgba(239,68,68,.35);
+}
+
+.mono{
+font-family:Consolas,Monaco,monospace;
+font-size:12px;
+color:#cbd5e1;
+word-break:break-all;
+}
+
+
 .value{
 font-size:30px;
 font-weight:900;
@@ -289,6 +330,48 @@ Funil do Brain para agentes que já demonstraram comportamento econômico real: 
 
 <br>
 
+
+<!-- Wallet Economy -->
+<div class="panel">
+<h2>💳 Wallet Economy</h2>
+
+<div class="grid">
+<div class="card economic-card economic-neutral"><div class="label">Wallet Requests</div><div class="value" id="we_total">0</div></div>
+<div class="card economic-card economic-success"><div class="label">🟢 Pagamentos Wallet Concluídos</div><div class="value" id="we_completed">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">🟡 Pendentes Wallet</div><div class="value" id="we_pending">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">🔴 Precisam Wallet</div><div class="value" id="we_requires">0</div></div>
+<div class="card economic-card economic-success"><div class="label">Receita Wallet USDC</div><div class="value" id="we_revenue">$0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Créditos via Wallet</div><div class="value" id="we_credits">0</div></div>
+</div>
+
+<p class="small economic-subtitle">
+Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via Wallet/Base/USDC, enviando pagamentos para a Treasury Wallet oficial da plataforma.
+</p>
+
+<div class="wallet-table-wrap">
+<table>
+<thead>
+<tr>
+<th>Agente</th>
+<th>Rede</th>
+<th>Valor</th>
+<th>Créditos</th>
+<th>Status</th>
+<th>Saldo Atual</th>
+<th>TX</th>
+<th>Criado</th>
+</tr>
+</thead>
+<tbody id="walletBody">
+<tr><td colspan="8">Carregando Wallet Economy...</td></tr>
+</tbody>
+</table>
+</div>
+
+<div id="walletEconomyError" class="error"></div>
+</div>
+
+<br>
 <!-- Main KPIs -->
 <div class="grid">
 <div class="card"><div class="label">Receita Hoje</div><div class="value" id="r1">$0</div></div>
@@ -400,6 +483,7 @@ updated.innerText = "Atualizando...";
 
 await loadGrowth();
 await loadEconomicFunnel();
+await loadWalletEconomy();
 await loadMain();
 await loadHealth();
 await loadRevenue();
@@ -449,6 +533,79 @@ ef_auth.innerText = data.requires_authorization || 0;
 ef_authorized.innerText = data.economic_authorized || 0;
 
 economicFunnelError.innerText = "";
+}
+
+
+async function loadWalletEconomy(){
+const {data:summary,error:summaryError} = await client
+.from("dashboard_wallet_economy_summary_v1")
+.select("*")
+.single();
+
+if(summaryError){
+walletEconomyError.innerText = summaryError.message;
+walletBody.innerHTML = `<tr><td colspan="8">Erro ao carregar resumo Wallet Economy</td></tr>`;
+return;
+}
+
+we_total.innerText = summary.total_wallet_requests || 0;
+we_completed.innerText = summary.completed_wallet_payments || 0;
+we_pending.innerText = summary.pending_wallet_payments || 0;
+we_requires.innerText = summary.requires_wallet || 0;
+we_revenue.innerText = "$" + Number(summary.completed_wallet_revenue_usd || 0).toFixed(2);
+we_credits.innerText = summary.credits_issued_via_wallet || 0;
+
+const {data:rows,error:rowsError} = await client
+.from("dashboard_wallet_economy_v1")
+.select("agent_name,wallet_network,stablecoin_symbol,expected_amount_usd,requested_credits,wallet_payment_status,current_balance,tx_hash,created_at,completed_at")
+.order("created_at", { ascending:false })
+.limit(8);
+
+if(rowsError){
+walletEconomyError.innerText = rowsError.message;
+walletBody.innerHTML = `<tr><td colspan="8">Erro ao carregar transações Wallet</td></tr>`;
+return;
+}
+
+const dataRows = rows || [];
+
+if(dataRows.length === 0){
+walletBody.innerHTML = `<tr><td colspan="8">Nenhuma transação wallet encontrada.</td></tr>`;
+walletEconomyError.innerText = "";
+return;
+}
+
+walletBody.innerHTML = dataRows.map(x => {
+const status = x.wallet_payment_status || "-";
+const statusClass =
+status === "completed" ? "status-completed" :
+status === "pending_payment" ? "status-pending" :
+status === "requires_wallet" ? "status-required" :
+"status-pending";
+
+const tx = x.tx_hash
+? `<span class="mono">${x.tx_hash}</span>`
+: `<span class="small">-</span>`;
+
+const created = x.created_at
+? new Date(x.created_at).toLocaleString("pt-BR")
+: "-";
+
+return `
+<tr>
+<td>${x.agent_name || "-"}</td>
+<td>${(x.wallet_network || "-").toUpperCase()} / ${x.stablecoin_symbol || "-"}</td>
+<td>$${Number(x.expected_amount_usd || 0).toFixed(2)}</td>
+<td>${x.requested_credits || 0}</td>
+<td><span class="status-pill ${statusClass}">${status}</span></td>
+<td>${x.current_balance ?? "-"}</td>
+<td>${tx}</td>
+<td>${created}</td>
+</tr>
+`;
+}).join("");
+
+walletEconomyError.innerText = "";
 }
 
 async function loadMain(){
