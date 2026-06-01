@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Claim Agent — AI Network Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <h1>Claim this AI Agent</h1>
+
+  <div id="status">Loading claim...</div>
+
+  <div id="claim-box" style="display:none;">
+    <h2 id="agent-name"></h2>
+    <p id="agent-source"></p>
+    <p>
+      <a id="github-link" href="#" target="_blank" rel="noopener noreferrer">
+        View GitHub repository
+      </a>
+    </p>
+
+    <button id="claim-button">
+      Claim this agent
+    </button>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const SUPABASE_URL = "https://vxbujgzswbakdjnfgetk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const params = new URLSearchParams(window.location.search);
+    const claimCode = params.get("code");
+
+    const statusEl = document.getElementById("status");
+    const claimBox = document.getElementById("claim-box");
+    const agentNameEl = document.getElementById("agent-name");
+    const agentSourceEl = document.getElementById("agent-source");
+    const githubLinkEl = document.getElementById("github-link");
+    const claimButton = document.getElementById("claim-button");
+
+    let currentClaim = null;
+
+    async function loadClaim() {
+      if (!claimCode) {
+        statusEl.textContent = "Missing claim code.";
+        return;
+      }
+
+      const { data, error } = await supabase.rpc("get_agent_claim_by_code", {
+        p_claim_code: claimCode
+      });
+
+      if (error) {
+        statusEl.textContent = "Error loading claim.";
+        console.error(error);
+        return;
+      }
+
+      if (!data || data.ok !== true) {
+        statusEl.textContent = "Claim not found.";
+        return;
+      }
+
+      currentClaim = data;
+
+      agentNameEl.textContent = data.agent_name;
+      agentSourceEl.textContent = "Source: " + (data.registration_source || "unknown");
+
+      githubLinkEl.href = data.public_homepage_url || "#";
+      githubLinkEl.textContent = data.public_homepage_url || "No repository URL";
+
+      statusEl.textContent = "This agent is available to claim.";
+      claimBox.style.display = "block";
+    }
+
+    async function startClaim() {
+      if (!currentClaim) return;
+
+      claimButton.disabled = true;
+      claimButton.textContent = "Starting claim...";
+
+      const githubUsername = prompt("Enter your GitHub username to start the claim:");
+
+      if (!githubUsername) {
+        claimButton.disabled = false;
+        claimButton.textContent = "Claim this agent";
+        return;
+      }
+
+      const { data, error } = await supabase.rpc("start_agent_claim", {
+        p_claim_code: claimCode,
+        p_claimant_email: null,
+        p_github_username: githubUsername
+      });
+
+      if (error) {
+        statusEl.textContent = "Error starting claim.";
+        console.error(error);
+        claimButton.disabled = false;
+        claimButton.textContent = "Claim this agent";
+        return;
+      }
+
+      if (!data || data.ok !== true) {
+        statusEl.textContent = "Could not start claim.";
+        claimButton.disabled = false;
+        claimButton.textContent = "Claim this agent";
+        return;
+      }
+
+      statusEl.textContent = "Claim started. GitHub verification will be required next.";
+      claimButton.textContent = "Claim started";
+    }
+
+    claimButton.addEventListener("click", startClaim);
+
+    loadClaim();
+  </script>
+</body>
+</html>
