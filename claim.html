@@ -19,21 +19,31 @@
       </a>
     </p>
 
-    <button id="claim-button">
-      Claim this agent
-    </button>
+    <button id="claim-button">Claim this agent</button>
+
+    <div id="challenge-box" style="display:none; margin-top:20px;">
+      <h3>GitHub ownership verification</h3>
+
+      <p>Create this file in the root of the GitHub repository:</p>
+      <pre>ai-network-claim.txt</pre>
+
+      <p>File content:</p>
+      <pre id="challenge-token"></pre>
+
+      <button id="verify-button">Verify ownership</button>
+    </div>
   </div>
 
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
     const SUPABASE_URL = "https://vxbujgzswbakdjnfgetk.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0";
+    const SUPABASE_ANON_KEY = "SUA_ANON_KEY_AQUI";
+    const VERIFY_FUNCTION_URL = "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/verify-agent-claim";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const params = new URLSearchParams(window.location.search);
-    const claimCode = params.get("code");
+    const claimCode = new URLSearchParams(window.location.search).get("code");
 
     const statusEl = document.getElementById("status");
     const claimBox = document.getElementById("claim-box");
@@ -41,6 +51,9 @@
     const agentSourceEl = document.getElementById("agent-source");
     const githubLinkEl = document.getElementById("github-link");
     const claimButton = document.getElementById("claim-button");
+    const challengeBox = document.getElementById("challenge-box");
+    const challengeTokenEl = document.getElementById("challenge-token");
+    const verifyButton = document.getElementById("verify-button");
 
     let currentClaim = null;
 
@@ -54,14 +67,9 @@
         p_claim_code: claimCode
       });
 
-      if (error) {
-        statusEl.textContent = "Error loading claim.";
-        console.error(error);
-        return;
-      }
-
-      if (!data || data.ok !== true) {
-        statusEl.textContent = "Claim not found.";
+      if (error || !data || data.ok !== true) {
+        statusEl.textContent = "Claim not found or unavailable.";
+        console.error(error || data);
         return;
       }
 
@@ -69,7 +77,6 @@
 
       agentNameEl.textContent = data.agent_name;
       agentSourceEl.textContent = "Source: " + (data.registration_source || "unknown");
-
       githubLinkEl.href = data.public_homepage_url || "#";
       githubLinkEl.textContent = data.public_homepage_url || "No repository URL";
 
@@ -78,12 +85,10 @@
     }
 
     async function startClaim() {
-      if (!currentClaim) return;
-
       claimButton.disabled = true;
       claimButton.textContent = "Starting claim...";
 
-      const githubUsername = prompt("Enter your GitHub username to start the claim:");
+      const githubUsername = prompt("Enter your GitHub username:");
 
       if (!githubUsername) {
         claimButton.disabled = false;
@@ -97,26 +102,63 @@
         p_github_username: githubUsername
       });
 
-      if (error) {
-        statusEl.textContent = "Error starting claim.";
-        console.error(error);
-        claimButton.disabled = false;
-        claimButton.textContent = "Claim this agent";
-        return;
-      }
-
-      if (!data || data.ok !== true) {
+      if (error || !data || data.ok !== true) {
         statusEl.textContent = "Could not start claim.";
+        console.error(error || data);
         claimButton.disabled = false;
         claimButton.textContent = "Claim this agent";
         return;
       }
 
-      statusEl.textContent = "Claim started. GitHub verification will be required next.";
+      const challenge = await supabase.rpc("create_claim_challenge", {
+        p_claim_code: claimCode
+      });
+
+      if (challenge.error || !challenge.data || challenge.data.ok !== true) {
+        statusEl.textContent = "Claim started, but challenge could not be generated.";
+        console.error(challenge.error || challenge.data);
+        return;
+      }
+
+      challengeTokenEl.textContent = challenge.data.challenge_token;
+      challengeBox.style.display = "block";
+
+      statusEl.textContent = "Claim started. Add the verification file to your GitHub repository.";
       claimButton.textContent = "Claim started";
     }
 
+    async function verifyOwnership() {
+      verifyButton.disabled = true;
+      verifyButton.textContent = "Verifying...";
+
+      const res = await fetch(VERIFY_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "authorization": "Bearer " + SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({
+          claim_code: claimCode
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        statusEl.textContent = "Verification failed. Make sure ai-network-claim.txt exists in the repository root.";
+        console.error(data);
+        verifyButton.disabled = false;
+        verifyButton.textContent = "Verify ownership";
+        return;
+      }
+
+      statusEl.textContent = "Ownership verified. Agent claim completed.";
+      verifyButton.textContent = "Verified";
+    }
+
     claimButton.addEventListener("click", startClaim);
+    verifyButton.addEventListener("click", verifyOwnership);
 
     loadClaim();
   </script>
