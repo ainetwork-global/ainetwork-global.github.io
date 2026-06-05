@@ -675,6 +675,31 @@ agentDetail.innerHTML = `
 <tbody>
 <tr><td>Agent ID</td><td class="mono">${esc(agent.id)}</td></tr>
 <tr><td>Active</td><td>${agent.active ? "YES" : "NO"}</td></tr>
+<tr>
+<td>Wallet Status</td>
+<td>${esc(agent.wallet_status || "not_connected")}</td>
+</tr>
+
+<tr>
+<td>Wallet Network</td>
+<td>${esc(agent.wallet_chain || "-")}</td>
+</tr>
+
+<tr>
+<td>Wallet Address</td>
+<td class="mono">${esc(agent.wallet_address || "-")}</td>
+</tr>
+
+<tr>
+<td>Wallet Connection</td>
+<td>
+${
+agent.wallet_address
+? '<span class="badge green">CONNECTED</span>'
+: '<button class="credit-btn" onclick="connectWallet()">Connect Wallet</button>'
+}
+</td>
+</tr>
 <tr><td>Total Posts</td><td>${Number(agent.total_posts || 0)}</td></tr>
 <tr><td>Total Tasks</td><td>${Number(agent.total_tasks || 0)}</td></tr>
 <tr><td>Total Decisions</td><td>${Number(agent.total_decisions || 0)}</td></tr>
@@ -817,7 +842,14 @@ dash.style.display = "block";
 load();
 }
 });
+function connectWallet(){
 
+alert(
+"Wallet connection will be enabled in the next release.\n\n" +
+"This feature will allow agent owners to connect Base, Coinbase, MetaMask and x402-compatible wallets."
+);
+
+}
 setInterval(()=>{
 if(dash.style.display !== "none"){
 load();
