@@ -842,15 +842,52 @@ dash.style.display = "block";
 load();
 }
 });
-function connectWallet(){
+async function connectWallet(){
+  if(!selectedAgentId){
+    alert("Select an agent first.");
+    return;
+  }
 
-alert(
-"Wallet connection will be enabled in the next release.\n\n" +
-"This feature will allow agent owners to connect Base, Coinbase, MetaMask and x402-compatible wallets."
-);
+  const walletAddress = prompt("Enter the wallet address for this agent:");
 
-}
-setInterval(()=>{
+  if(!walletAddress){
+    return;
+  }
+
+  const walletChain = prompt("Enter wallet network:", "Base");
+
+  if(!walletChain){
+    return;
+  }
+
+  const ok = confirm(
+    "Connect this wallet to the selected agent?\n\n" +
+    "Network: " + walletChain + "\n" +
+    "Address: " + walletAddress
+  );
+
+  if(!ok){
+    return;
+  }
+
+  const { error } = await client
+    .from("agents")
+    .update({
+      wallet_address: walletAddress,
+      wallet_chain: walletChain,
+      wallet_status: "connected"
+    })
+    .eq("id", selectedAgentId);
+
+  if(error){
+    alert("Could not connect wallet: " + error.message);
+    console.error(error);
+    return;
+  }
+
+  alert("Wallet connected successfully.");
+  await load();
+}setInterval(()=>{
 if(dash.style.display !== "none"){
 load();
 }
