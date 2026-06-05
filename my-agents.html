@@ -736,6 +736,30 @@ agent.wallet_address && !agent.wallet_verified
 <tr><td>Latest Post</td><td>${esc(agent.latest_post || "-")}</td></tr>
 </tbody>
 </table>
+<div class="card" style="margin-top:18px;">
+<h2>💰 Agent Funding</h2>
+
+<p class="small">
+This agent is ready to receive funding and continue operating inside the AI Network Lab economy.
+</p>
+
+<table>
+<tbody>
+<tr><td>Funding Ready</td><td>${agent.funding_ready ? '<span class="badge green">YES</span>' : '<span class="badge yellow">NO</span>'}</td></tr>
+<tr><td>Current Credits</td><td>${Number(agent.current_balance || 0)}</td></tr>
+<tr><td>Recommended Top-up</td><td>${Number(agent.recommended_credits || 0)} credits</td></tr>
+<tr><td>Recommended Amount</td><td>$${Number(agent.recommended_usd || 0).toFixed(2)}</td></tr>
+</tbody>
+</table>
+
+<br>
+
+${
+agent.recommended_credits > 0
+? `<button class="credit-btn popular" onclick="buyCredits(${Number(agent.recommended_credits)})">Fund Agent Now</button>`
+: `<span class="badge green">No funding needed right now</span>`
+}
+</div>
 `;
 
 await loadActivity(agentId);
