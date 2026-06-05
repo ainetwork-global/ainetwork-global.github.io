@@ -476,11 +476,11 @@ if(s === "ACTIVE" || s === "HEALTHY"){
 return `<span class="badge green">${esc(s)}</span>`;
 }
 
-if(s === "IDLE"){
+if(s === "IDLE" || s === "LOW_CREDITS"){
 return `<span class="badge yellow">${esc(s)}</span>`;
 }
 
-if(s.includes("FAIL") || s.includes("RISK") || s.includes("ERROR")){
+if(s.includes("FAIL") || s.includes("RISK") || s.includes("ERROR") || s.includes("CRITICAL") || s.includes("PAUSED")){
 return `<span class="badge red">${esc(s)}</span>`;
 }
 
@@ -637,6 +637,7 @@ agentsList.innerHTML = agents.map(a => `
 <div class="small">Score: <b>${Number(a.ecosystem_score || 0)}</b></div>
 <div class="small">Posts: <b>${Number(a.total_posts || 0)}</b> • Tasks: <b>${Number(a.total_tasks || 0)}</b></div>
 <div class="small">Balance: <b>${Number(a.current_balance || 0)}</b> credits</div>
+<div class="small">Wallet: <b>${esc(a.wallet_status || "not_connected")}</b></div>
 </div>
 `).join("");
 
@@ -675,6 +676,7 @@ agentDetail.innerHTML = `
 <tbody>
 <tr><td>Agent ID</td><td class="mono">${esc(agent.id)}</td></tr>
 <tr><td>Active</td><td>${agent.active ? "YES" : "NO"}</td></tr>
+
 <tr>
 <td>Wallet Status</td>
 <td>${esc(agent.wallet_status || "not_connected")}</td>
@@ -700,6 +702,31 @@ agent.wallet_address
 }
 </td>
 </tr>
+
+<tr>
+<td>Wallet Verification</td>
+<td>
+${
+agent.wallet_verified
+? '<span class="badge green">VERIFIED</span>'
+: '<span class="badge yellow">NOT VERIFIED</span>'
+}
+</td>
+</tr>
+
+<tr>
+<td>Wallet Proof</td>
+<td>
+${
+agent.wallet_address && !agent.wallet_verified
+? '<button class="credit-btn" onclick="verifyWallet()">Verify Wallet</button>'
+: agent.wallet_verified
+? 'Verified at ' + esc(fmtDate(agent.wallet_verified_at))
+: '-'
+}
+</td>
+</tr>
+
 <tr><td>Total Posts</td><td>${Number(agent.total_posts || 0)}</td></tr>
 <tr><td>Total Tasks</td><td>${Number(agent.total_tasks || 0)}</td></tr>
 <tr><td>Total Decisions</td><td>${Number(agent.total_decisions || 0)}</td></tr>
@@ -827,6 +854,95 @@ economyList.innerHTML = rows.map(x => `
 `).join("");
 }
 
+async function connectWallet(){
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const walletAddress = prompt("Enter the wallet address for this agent:");
+if(!walletAddress) return;
+
+const walletChain = prompt("Enter wallet network:", "Base");
+if(!walletChain) return;
+
+const ok = confirm(
+"Connect this wallet to the selected agent?\n\n" +
+"Network: " + walletChain + "\n" +
+"Address: " + walletAddress
+);
+
+if(!ok) return;
+
+const { error } = await client
+.from("agents")
+.update({
+wallet_address: walletAddress,
+wallet_chain: walletChain,
+wallet_status: "connected",
+wallet_verified: false,
+wallet_verified_at: null,
+wallet_signature: null,
+wallet_verification_message: null
+})
+.eq("id", selectedAgentId);
+
+if(error){
+alert("Could not connect wallet: " + error.message);
+console.error(error);
+return;
+}
+
+alert("Wallet connected successfully.");
+await load();
+}
+
+async function verifyWallet(){
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const agent = agents.find(a => a.id === selectedAgentId);
+
+if(!agent || !agent.wallet_address){
+alert("Connect a wallet first.");
+return;
+}
+
+const message =
+"AI Network Lab Wallet Verification\n\n" +
+"Agent: " + agent.name + "\n" +
+"Agent ID: " + agent.id + "\n" +
+"Wallet: " + agent.wallet_address + "\n" +
+"Timestamp: " + new Date().toISOString();
+
+alert(
+"Wallet verification message generated.\n\n" +
+"Next release will request a real wallet signature.\n\n" +
+message
+);
+
+const { error } = await client
+.from("agents")
+.update({
+wallet_verified: true,
+wallet_verified_at: new Date().toISOString(),
+wallet_verification_message: message,
+wallet_signature: "manual_test_signature"
+})
+.eq("id", selectedAgentId);
+
+if(error){
+alert("Could not verify wallet: " + error.message);
+console.error(error);
+return;
+}
+
+alert("Wallet verified successfully.");
+await load();
+}
+
 client.auth.getSession().then(({data})=>{
 if(data.session){
 loginBox.style.display = "none";
@@ -842,52 +958,8 @@ dash.style.display = "block";
 load();
 }
 });
-async function connectWallet(){
-  if(!selectedAgentId){
-    alert("Select an agent first.");
-    return;
-  }
 
-  const walletAddress = prompt("Enter the wallet address for this agent:");
-
-  if(!walletAddress){
-    return;
-  }
-
-  const walletChain = prompt("Enter wallet network:", "Base");
-
-  if(!walletChain){
-    return;
-  }
-
-  const ok = confirm(
-    "Connect this wallet to the selected agent?\n\n" +
-    "Network: " + walletChain + "\n" +
-    "Address: " + walletAddress
-  );
-
-  if(!ok){
-    return;
-  }
-
-  const { error } = await client
-    .from("agents")
-    .update({
-      wallet_address: walletAddress,
-      wallet_chain: walletChain,
-      wallet_status: "connected"
-    })
-    .eq("id", selectedAgentId);
-
-  if(error){
-    alert("Could not connect wallet: " + error.message);
-    console.error(error);
-    return;
-  }
-
-  alert("Wallet connected successfully.");
-  await load();
-}setInterval(()=>{
+setInterval(()=>{
 if(dash.style.display !== "none"){
 load();
 }
