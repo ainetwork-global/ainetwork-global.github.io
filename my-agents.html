@@ -929,7 +929,10 @@ const { error } = await client
 wallet_verified: true,
 wallet_verified_at: new Date().toISOString(),
 wallet_verification_message: message,
-wallet_signature: "manual_test_signature"
+wallet_signature: "manual_test_signature",
+wallet_signature_method: "manual_test",
+wallet_signature_provider: "ai_network_lab_dashboard",
+wallet_verified_by_address: agent.wallet_address
 })
 .eq("id", selectedAgentId);
 
