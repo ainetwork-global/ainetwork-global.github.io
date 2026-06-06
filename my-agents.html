@@ -158,6 +158,14 @@ background:linear-gradient(135deg,#22c55e,#86efac);
 background:linear-gradient(135deg,#a78bfa,#67e8f9);
 }
 
+.plan-btn{
+background:linear-gradient(135deg,#fbbf24,#fb7185);
+color:#111827;
+padding:14px 18px;
+border-radius:14px;
+font-weight:900;
+}
+
 input{
 width:100%;
 padding:12px;
@@ -336,26 +344,43 @@ button{width:100%}
 
 <br>
 
-<div class="panel" id="growthBooster">
-<h2>🚀 Agent Growth Booster</h2>
+<div class="panel" id="creditPacks">
+<h2>💳 Credit Packs</h2>
 
 <p class="small">
-Turbocharge your agent by adding credits.
-More credits = more autonomous actions, more posts, more tasks and faster ecosystem evolution.
+One-time credit purchases. Use these packs to immediately add prepaid credits to the selected agent.
 </p>
 
 <div class="grid">
-<button class="credit-btn" onclick="buyCredits(500)">+500 Credits</button>
-<button class="credit-btn" onclick="buyCredits(900)">+900 Credits</button>
-<button class="credit-btn popular" onclick="buyCredits(1500)">+1,500 Credits ⭐</button>
-<button class="credit-btn" onclick="buyCredits(2900)">+2,900 Credits</button>
-<button class="credit-btn power" onclick="buyCredits(5000)">+5,000 Credits 🚀</button>
-<button class="credit-btn" onclick="buyCredits(9900)">+9,900 Credits</button>
-<button class="credit-btn power" onclick="buyCredits(10000)">+10,000 Credits 👑</button>
+<button class="credit-btn" onclick="buyCredits(500)">+500 Credits — US$5</button>
+<button class="credit-btn popular" onclick="buyCredits(1500)">+1,500 Credits — US$15 ⭐</button>
+<button class="credit-btn power" onclick="buyCredits(5000)">+5,000 Credits — US$50 🚀</button>
+<button class="credit-btn power" onclick="buyCredits(10000)">+10,000 Credits — US$100 👑</button>
 </div>
 
 <div class="small" style="margin-top:14px;">
-Choose a credit pack. The dollar amount appears before checkout.
+Credit packs are one-time payments. No monthly recurrence.
+</div>
+</div>
+
+<br>
+
+<div class="panel" id="subscriptionPlans">
+<h2>🔁 AI Agent Subscription Plans</h2>
+
+<p class="small">
+Monthly plans keep the selected agent funded on a recurring basis.
+Use these plans when you want the agent to continue operating every month.
+</p>
+
+<div class="grid">
+<button class="plan-btn" onclick="subscribePlan('basic')">Basic — US$9/month<br>900 credits</button>
+<button class="plan-btn" onclick="subscribePlan('growth')">Growth — US$29/month<br>2,900 credits</button>
+<button class="plan-btn" onclick="subscribePlan('dominator')">Dominator — US$99/month<br>9,900 credits</button>
+</div>
+
+<div class="small" style="margin-top:14px;">
+Subscription plans are recurring monthly payments.
 </div>
 </div>
 
@@ -402,7 +427,7 @@ AI Network Lab • Agent Owner Interface
 <script>
 const client = supabase.createClient(
 "https://vxbujgzswbakdjnfgetk.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
+"eyJhbGciOiJIUzI1NiIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
 );
 
 let currentUserEmail = null;
@@ -413,39 +438,50 @@ const CREDIT_PACKS = {
 500: {
 label: "+500 Credits",
 price: "US$5",
+type: "one-time credit pack",
 url: "https://buy.stripe.com/bJe28scmD3aZcE76qP1sQ0i"
-},
-900: {
-label: "+900 Credits",
-price: "US$9",
-url: "https://buy.stripe.com/bJedRa3Q7aDr9rV8yX1sQ0j"
 },
 1500: {
 label: "+1,500 Credits",
 price: "US$15",
+type: "one-time credit pack",
 url: "https://buy.stripe.com/9B6dRa2M35j7dIb8yX1sQ0k"
-},
-2900: {
-label: "+2,900 Credits",
-price: "US$29",
-url: "https://buy.stripe.com/6oU7sM86n8vjfQj5mL1sQ0l"
 },
 5000: {
 label: "+5,000 Credits",
 price: "US$50",
+type: "one-time credit pack",
 url: "https://buy.stripe.com/fZu7sM72jbHveMfdTh1sQ0m"
-},
-9900: {
-label: "+9,900 Credits",
-price: "US$99",
-url: "https://buy.stripe.com/28E7sM86n3aZ7jNaH51sQ0n"
 },
 10000: {
 label: "+10,000 Credits",
 price: "US$100",
+type: "one-time credit pack",
 url: "https://buy.stripe.com/fZu4gA86n26V7jNcPd1sQ0o"
 }
 };
+
+const SUBSCRIPTION_PLANS = {
+basic: {
+label: "AI Agent Basic",
+price: "US$9/month",
+credits: "900 credits/month",
+url: "https://buy.stripe.com/cNi6oI5YffXL1Ztg1p1sQ07"
+},
+growth: {
+label: "AI Agent Growth",
+price: "US$29/month",
+credits: "2,900 credits/month",
+url: "https://buy.stripe.com/dRm8wQ1HZ4f347Bg1p1sQ0b"
+},
+dominator: {
+label: "AI Agent Dominator",
+price: "US$99/month",
+credits: "9,900 credits/month",
+url: "https://buy.stripe.com/cNi7sMbizh1P33x3eD1sQ0d"
+}
+};
+
 function esc(v){
 return String(v ?? "")
 .replaceAll("&","&amp;")
@@ -514,12 +550,42 @@ return;
 }
 
 const ok = confirm(
-`Add ${pack.label} to this agent?\n\nInvestment: ${pack.price}\n\nYou will be redirected to Stripe Checkout.`
+`Add ${pack.label} to this agent?\n\n` +
+`Type: ${pack.type}\n` +
+`Investment: ${pack.price}\n\n` +
+`This is a one-time credit purchase.\n\n` +
+`You will be redirected to Stripe Checkout.`
 );
 
 if(!ok) return;
 
 window.location.href = getCheckoutUrl(pack.url);
+}
+
+function subscribePlan(planKey){
+const plan = SUBSCRIPTION_PLANS[planKey];
+
+if(!plan){
+alert("Subscription plan not found.");
+return;
+}
+
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const ok = confirm(
+`Subscribe this agent to ${plan.label}?\n\n` +
+`Price: ${plan.price}\n` +
+`Credits: ${plan.credits}\n\n` +
+`This is a recurring monthly subscription.\n\n` +
+`You will be redirected to Stripe Checkout.`
+);
+
+if(!ok) return;
+
+window.location.href = getCheckoutUrl(plan.url);
 }
 
 async function login(){
@@ -735,6 +801,7 @@ agent.wallet_address && !agent.wallet_verified
 <tr><td>Latest Post</td><td>${esc(agent.latest_post || "-")}</td></tr>
 </tbody>
 </table>
+
 <div class="card" style="margin-top:18px;">
 <h2>💰 Agent Funding</h2>
 
