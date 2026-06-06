@@ -709,7 +709,16 @@ await loadAgentDetails(selectedAgentId);
 
 async function selectAgent(id){
 selectedAgentId = id;
-await loadAgents();
+
+document.querySelectorAll(".agent-card").forEach(card => {
+card.classList.remove("active-card");
+});
+
+const selectedCard = document.querySelector(`[data-agent-id="${id}"]`);
+if(selectedCard){
+selectedCard.classList.add("active-card");
+}
+
 await loadAgentDetails(id);
 }
 
