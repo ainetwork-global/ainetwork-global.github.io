@@ -693,7 +693,7 @@ selectedAgentId = agents[0].id;
 }
 
 agentsList.innerHTML = agents.map(a => `
-<div class="agent-card ${a.id === selectedAgentId ? "active-card" : ""}" onclick="selectAgent('${a.id}')">
+<div class="agent-card ${a.id === selectedAgentId ? "active-card" : ""}" data-agent-id="${a.id}" onclick="selectAgent('${a.id}')">
 <h3>${esc(a.name)}</h3>
 <div>${statusBadge(a.operational_status)}</div>
 <br>
