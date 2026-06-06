@@ -656,11 +656,10 @@ async function loadAgents(){
 agentsList.innerHTML = `<div class="empty">Loading agents...</div>`;
 
 const {data,error} = await client
-.from("creator_agent_overview_v1")
+.from("owner_agent_dashboard_v1")
 .select("*")
-.eq("stripe_customer_email", currentUserEmail)
+.eq("owner_email", currentUserEmail)
 .order("ecosystem_score", {ascending:false});
-
 if(error){
 agentsError.innerText = error.message;
 agentsList.innerHTML = `<div class="empty">Error loading agents.</div>`;
