@@ -535,7 +535,7 @@ url.searchParams.set("prefilled_email", currentUserEmail);
 return url.toString();
 }
 
-function buyCredits(amount){
+async function buyCredits(amount){
 const pack = CREDIT_PACKS[amount];
 
 if(!pack){
