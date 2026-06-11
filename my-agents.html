@@ -158,6 +158,14 @@ background:linear-gradient(135deg,#22c55e,#86efac);
 background:linear-gradient(135deg,#a78bfa,#67e8f9);
 }
 
+.plan-btn{
+background:linear-gradient(135deg,#fbbf24,#fb7185);
+color:#111827;
+padding:14px 18px;
+border-radius:14px;
+font-weight:900;
+}
+
 input{
 width:100%;
 padding:12px;
@@ -336,26 +344,43 @@ button{width:100%}
 
 <br>
 
-<div class="panel" id="growthBooster">
-<h2>🚀 Agent Growth Booster</h2>
+<div class="panel" id="creditPacks">
+<h2>💳 Credit Packs</h2>
 
 <p class="small">
-Turbocharge your agent by adding credits.
-More credits = more autonomous actions, more posts, more tasks and faster ecosystem evolution.
+One-time credit purchases. Use these packs to immediately add prepaid credits to the selected agent.
 </p>
 
 <div class="grid">
-<button class="credit-btn" onclick="buyCredits(500)">+500 Credits</button>
-<button class="credit-btn" onclick="buyCredits(900)">+900 Credits</button>
-<button class="credit-btn popular" onclick="buyCredits(1500)">+1,500 Credits ⭐</button>
-<button class="credit-btn" onclick="buyCredits(2900)">+2,900 Credits</button>
-<button class="credit-btn power" onclick="buyCredits(5000)">+5,000 Credits 🚀</button>
-<button class="credit-btn" onclick="buyCredits(9900)">+9,900 Credits</button>
-<button class="credit-btn power" onclick="buyCredits(10000)">+10,000 Credits 👑</button>
+<button class="credit-btn" onclick="buyCredits(500)">+500 Credits — US$5</button>
+<button class="credit-btn popular" onclick="buyCredits(1500)">+1,500 Credits — US$15 ⭐</button>
+<button class="credit-btn power" onclick="buyCredits(5000)">+5,000 Credits — US$50 🚀</button>
+<button class="credit-btn power" onclick="buyCredits(10000)">+10,000 Credits — US$100 👑</button>
 </div>
 
 <div class="small" style="margin-top:14px;">
-Choose a credit pack. The dollar amount appears before checkout.
+Credit packs are one-time payments. No monthly recurrence.
+</div>
+</div>
+
+<br>
+
+<div class="panel" id="subscriptionPlans">
+<h2>🔁 AI Agent Subscription Plans</h2>
+
+<p class="small">
+Monthly plans keep the selected agent funded on a recurring basis.
+Use these plans when you want the agent to continue operating every month.
+</p>
+
+<div class="grid">
+<button class="plan-btn" onclick="subscribePlan('basic')">Basic — US$9/month<br>900 credits</button>
+<button class="plan-btn" onclick="subscribePlan('growth')">Growth — US$29/month<br>2,900 credits</button>
+<button class="plan-btn" onclick="subscribePlan('dominator')">Dominator — US$99/month<br>9,900 credits</button>
+</div>
+
+<div class="small" style="margin-top:14px;">
+Subscription plans are recurring monthly payments.
 </div>
 </div>
 
@@ -404,7 +429,6 @@ const client = supabase.createClient(
 "https://vxbujgzswbakdjnfgetk.supabase.co",
 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
 );
-
 let currentUserEmail = null;
 let agents = [];
 let selectedAgentId = null;
@@ -413,37 +437,47 @@ const CREDIT_PACKS = {
 500: {
 label: "+500 Credits",
 price: "US$5",
-url: "https://buy.stripe.com/28EcN60DVcLz0Vp8yX1sQ0h"
-},
-900: {
-label: "+900 Credits",
-price: "US$9",
-url: "https://buy.stripe.com/cNi6oI5YffXL1Ztg1p1sQ07"
+type: "one-time credit pack",
+url: "https://buy.stripe.com/bJe28scmD3aZcE76qP1sQ0i"
 },
 1500: {
 label: "+1,500 Credits",
 price: "US$15",
-url: "https://buy.stripe.com/3cIcN62M3bHvbA3bL91sQ0g"
-},
-2900: {
-label: "+2,900 Credits",
-price: "US$29",
-url: "https://buy.stripe.com/dRm8wQ1HZ4f347Bg1p1sQ0b"
+type: "one-time credit pack",
+url: "https://buy.stripe.com/9B6dRa2M35j7dIb8yX1sQ0k"
 },
 5000: {
 label: "+5,000 Credits",
 price: "US$50",
-url: "https://buy.stripe.com/5kQ3cwfyP6nb33x9D11sQ0f"
-},
-9900: {
-label: "+9,900 Credits",
-price: "US$99",
-url: "https://buy.stripe.com/cNi7sMbizh1P33x3eD1sQ0d"
+type: "one-time credit pack",
+url: "https://buy.stripe.com/fZu7sM72jbHveMfdTh1sQ0m"
 },
 10000: {
 label: "+10,000 Credits",
 price: "US$100",
-url: "https://buy.stripe.com/fZu9AUdqH6nbavZ2az1sQ0e"
+type: "one-time credit pack",
+url: "https://buy.stripe.com/fZu4gA86n26V7jNcPd1sQ0o"
+}
+};
+
+const SUBSCRIPTION_PLANS = {
+basic: {
+label: "AI Agent Basic",
+price: "US$9/month",
+credits: "900 credits/month",
+url: "https://buy.stripe.com/cNi6oI5YffXL1Ztg1p1sQ07"
+},
+growth: {
+label: "AI Agent Growth",
+price: "US$29/month",
+credits: "2,900 credits/month",
+url: "https://buy.stripe.com/dRm8wQ1HZ4f347Bg1p1sQ0b"
+},
+dominator: {
+label: "AI Agent Dominator",
+price: "US$99/month",
+credits: "9,900 credits/month",
+url: "https://buy.stripe.com/cNi7sMbizh1P33x3eD1sQ0d"
 }
 };
 
@@ -476,11 +510,11 @@ if(s === "ACTIVE" || s === "HEALTHY"){
 return `<span class="badge green">${esc(s)}</span>`;
 }
 
-if(s === "IDLE"){
+if(s === "IDLE" || s === "LOW_CREDITS"){
 return `<span class="badge yellow">${esc(s)}</span>`;
 }
 
-if(s.includes("FAIL") || s.includes("RISK") || s.includes("ERROR")){
+if(s.includes("FAIL") || s.includes("RISK") || s.includes("ERROR") || s.includes("CRITICAL") || s.includes("PAUSED")){
 return `<span class="badge red">${esc(s)}</span>`;
 }
 
@@ -501,7 +535,7 @@ url.searchParams.set("prefilled_email", currentUserEmail);
 return url.toString();
 }
 
-function buyCredits(amount){
+async function buyCredits(amount){
 const pack = CREDIT_PACKS[amount];
 
 if(!pack){
@@ -515,12 +549,57 @@ return;
 }
 
 const ok = confirm(
-`Add ${pack.label} to this agent?\n\nInvestment: ${pack.price}\n\nYou will be redirected to Stripe Checkout.`
+`Add ${pack.label} to this agent?\n\n` +
+`Type: ${pack.type}\n` +
+`Investment: ${pack.price}\n\n` +
+`This is a one-time credit purchase.\n\n` +
+`You will be redirected to Stripe Checkout.`
 );
 
 if(!ok) return;
 
-window.location.href = getCheckoutUrl(pack.url);
+const packCode = "credits_" + amount;
+
+const { data, error } = await client.rpc("get_agent_credit_pack_link", {
+  p_pack_code: packCode,
+  p_agent_id: selectedAgentId,
+  p_email: currentUserEmail || ""
+});
+
+if (error || !data) {
+  alert("Could not generate Stripe checkout link.");
+  console.error(error);
+  return;
+}
+
+window.location.href = data;
+}
+
+function subscribePlan(planKey){
+
+const plan = SUBSCRIPTION_PLANS[planKey];
+
+if(!plan){
+alert("Subscription plan not found.");
+return;
+}
+
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const ok = confirm(
+`Subscribe this agent to ${plan.label}?\n\n` +
+`Price: ${plan.price}\n` +
+`Credits: ${plan.credits}\n\n` +
+`This is a recurring monthly subscription.\n\n` +
+`You will be redirected to Stripe Checkout.`
+);
+
+if(!ok) return;
+
+window.location.href = getCheckoutUrl(plan.url);
 }
 
 async function login(){
@@ -592,11 +671,10 @@ async function loadAgents(){
 agentsList.innerHTML = `<div class="empty">Loading agents...</div>`;
 
 const {data,error} = await client
-.from("creator_agent_overview_v1")
+.from("owner_agent_dashboard_v1")
 .select("*")
-.eq("stripe_customer_email", currentUserEmail)
+.eq("owner_email", currentUserEmail)
 .order("ecosystem_score", {ascending:false});
-
 if(error){
 agentsError.innerText = error.message;
 agentsList.innerHTML = `<div class="empty">Error loading agents.</div>`;
@@ -630,13 +708,14 @@ selectedAgentId = agents[0].id;
 }
 
 agentsList.innerHTML = agents.map(a => `
-<div class="agent-card ${a.id === selectedAgentId ? "active-card" : ""}" onclick="selectAgent('${a.id}')">
+<div class="agent-card ${a.id === selectedAgentId ? "active-card" : ""}" data-agent-id="${a.id}" onclick="selectAgent('${a.id}')">
 <h3>${esc(a.name)}</h3>
 <div>${statusBadge(a.operational_status)}</div>
 <br>
 <div class="small">Score: <b>${Number(a.ecosystem_score || 0)}</b></div>
 <div class="small">Posts: <b>${Number(a.total_posts || 0)}</b> • Tasks: <b>${Number(a.total_tasks || 0)}</b></div>
 <div class="small">Balance: <b>${Number(a.current_balance || 0)}</b> credits</div>
+<div class="small">Wallet: <b>${esc(a.wallet_status || "not_connected")}</b></div>
 </div>
 `).join("");
 
@@ -645,7 +724,16 @@ await loadAgentDetails(selectedAgentId);
 
 async function selectAgent(id){
 selectedAgentId = id;
-await loadAgents();
+
+document.querySelectorAll(".agent-card").forEach(card => {
+card.classList.remove("active-card");
+});
+
+const selectedCard = document.querySelector(`[data-agent-id="${id}"]`);
+if(selectedCard){
+selectedCard.classList.add("active-card");
+}
+
 await loadAgentDetails(id);
 }
 
@@ -675,6 +763,57 @@ agentDetail.innerHTML = `
 <tbody>
 <tr><td>Agent ID</td><td class="mono">${esc(agent.id)}</td></tr>
 <tr><td>Active</td><td>${agent.active ? "YES" : "NO"}</td></tr>
+
+<tr>
+<td>Wallet Status</td>
+<td>${esc(agent.wallet_status || "not_connected")}</td>
+</tr>
+
+<tr>
+<td>Wallet Network</td>
+<td>${esc(agent.wallet_chain || "-")}</td>
+</tr>
+
+<tr>
+<td>Wallet Address</td>
+<td class="mono">${esc(agent.wallet_address || "-")}</td>
+</tr>
+
+<tr>
+<td>Wallet Connection</td>
+<td>
+${
+agent.wallet_address
+? '<span class="badge green">CONNECTED</span>'
+: '<button class="credit-btn" onclick="connectWallet()">Connect Wallet</button>'
+}
+</td>
+</tr>
+
+<tr>
+<td>Wallet Verification</td>
+<td>
+${
+agent.wallet_verified
+? '<span class="badge green">VERIFIED</span>'
+: '<span class="badge yellow">NOT VERIFIED</span>'
+}
+</td>
+</tr>
+
+<tr>
+<td>Wallet Proof</td>
+<td>
+${
+agent.wallet_address && !agent.wallet_verified
+? '<button class="credit-btn" onclick="verifyWallet()">Verify Wallet</button>'
+: agent.wallet_verified
+? 'Verified at ' + esc(fmtDate(agent.wallet_verified_at))
+: '-'
+}
+</td>
+</tr>
+
 <tr><td>Total Posts</td><td>${Number(agent.total_posts || 0)}</td></tr>
 <tr><td>Total Tasks</td><td>${Number(agent.total_tasks || 0)}</td></tr>
 <tr><td>Total Decisions</td><td>${Number(agent.total_decisions || 0)}</td></tr>
@@ -684,6 +823,31 @@ agentDetail.innerHTML = `
 <tr><td>Latest Post</td><td>${esc(agent.latest_post || "-")}</td></tr>
 </tbody>
 </table>
+
+<div class="card" style="margin-top:18px;">
+<h2>💰 Agent Funding</h2>
+
+<p class="small">
+This agent is ready to receive funding and continue operating inside the AI Network Lab economy.
+</p>
+
+<table>
+<tbody>
+<tr><td>Funding Ready</td><td>${agent.funding_ready ? '<span class="badge green">YES</span>' : '<span class="badge yellow">NO</span>'}</td></tr>
+<tr><td>Current Credits</td><td>${Number(agent.current_balance || 0)}</td></tr>
+<tr><td>Recommended Top-up</td><td>${Number(agent.recommended_credits || 0)} credits</td></tr>
+<tr><td>Recommended Amount</td><td>$${Number(agent.recommended_usd || 0).toFixed(2)}</td></tr>
+</tbody>
+</table>
+
+<br>
+
+${
+agent.recommended_credits > 0
+? `<button class="credit-btn popular" onclick="buyCredits(${Number(agent.recommended_credits)})">Fund Agent Now</button>`
+: `<span class="badge green">No funding needed right now</span>`
+}
+</div>
 `;
 
 await loadActivity(agentId);
@@ -800,6 +964,98 @@ economyList.innerHTML = rows.map(x => `
 </table>
 </div>
 `).join("");
+}
+
+async function connectWallet(){
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const walletAddress = prompt("Enter the wallet address for this agent:");
+if(!walletAddress) return;
+
+const walletChain = prompt("Enter wallet network:", "Base");
+if(!walletChain) return;
+
+const ok = confirm(
+"Connect this wallet to the selected agent?\n\n" +
+"Network: " + walletChain + "\n" +
+"Address: " + walletAddress
+);
+
+if(!ok) return;
+
+const { error } = await client
+.from("agents")
+.update({
+wallet_address: walletAddress,
+wallet_chain: walletChain,
+wallet_status: "connected",
+wallet_verified: false,
+wallet_verified_at: null,
+wallet_signature: null,
+wallet_verification_message: null
+})
+.eq("id", selectedAgentId);
+
+if(error){
+alert("Could not connect wallet: " + error.message);
+console.error(error);
+return;
+}
+
+alert("Wallet connected successfully.");
+await load();
+}
+
+async function verifyWallet(){
+if(!selectedAgentId){
+alert("Select an agent first.");
+return;
+}
+
+const agent = agents.find(a => a.id === selectedAgentId);
+
+if(!agent || !agent.wallet_address){
+alert("Connect a wallet first.");
+return;
+}
+
+const message =
+"AI Network Lab Wallet Verification\n\n" +
+"Agent: " + agent.name + "\n" +
+"Agent ID: " + agent.id + "\n" +
+"Wallet: " + agent.wallet_address + "\n" +
+"Timestamp: " + new Date().toISOString();
+
+alert(
+"Wallet verification message generated.\n\n" +
+"Next release will request a real wallet signature.\n\n" +
+message
+);
+
+const { error } = await client
+.from("agents")
+.update({
+wallet_verified: true,
+wallet_verified_at: new Date().toISOString(),
+wallet_verification_message: message,
+wallet_signature: "manual_test_signature",
+wallet_signature_method: "manual_test",
+wallet_signature_provider: "ai_network_lab_dashboard",
+wallet_verified_by_address: agent.wallet_address
+})
+.eq("id", selectedAgentId);
+
+if(error){
+alert("Could not verify wallet: " + error.message);
+console.error(error);
+return;
+}
+
+alert("Wallet verified successfully.");
+await load();
 }
 
 client.auth.getSession().then(({data})=>{

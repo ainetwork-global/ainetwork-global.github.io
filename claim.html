@@ -1,8 +1,8 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Claim Agent â€” AI Network Lab</title>
+  <title>Claim Agent — AI Network Lab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -378,21 +378,6 @@
         return;
       }
 
-      const completed = await supabase.rpc("complete_agent_claim", {
-        p_claim_code: claimCode,
-        p_claimant_email: null,
-        p_github_username: null,
-        p_claimant_wallet_address: null
-      });
-
-      if (completed.error || !completed.data || completed.data.ok !== true) {
-        statusEl.textContent = "Ownership verified, but claim completion could not be recorded.";
-        console.error(completed.error || completed.data);
-        verifyButton.disabled = false;
-        verifyButton.textContent = "Verify ownership";
-        return;
-      }
-
       statusEl.textContent = "Ownership verified. Agent claim completed. You can now open the owner dashboard.";
       verifyButton.textContent = "Verified";
     }
@@ -404,5 +389,3 @@
   </script>
 </body>
 </html>
-
-

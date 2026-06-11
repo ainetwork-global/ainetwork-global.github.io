@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Claim Agent Ownership — AI Network Lab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:#07111f;color:#fff}
+    .wrap{max-width:760px;margin:0 auto;padding:36px 18px}
+    .card{background:#0f1c31;border:1px solid #23344c;border-radius:18px;padding:24px;margin-bottom:18px}
+    input{width:100%;padding:13px;margin:8px 0 14px;border-radius:12px;border:1px solid #23344c;background:#08111f;color:#fff}
+    button{padding:14px 18px;border:0;border-radius:14px;font-weight:800;cursor:pointer;background:#22c55e;color:#052e16}
+    .secondary{background:#334155;color:#fff}
+    .small{color:#9fb6d3;font-size:14px;line-height:1.5}
+    .ok{color:#86efac}
+    .err{color:#fca5a5}
+    .mono{font-family:monospace;word-break:break-word}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Claim Agent Ownership</h1>
+    <p class="small">
+      Use this page to claim ownership of an AI agent discovered by AI Network Lab.
+    </p>
+  </div>
+
+  <div class="card">
+    <label>Claim Code</label>
+    <input id="claimCode" placeholder="Paste claim code here">
+
+    <label>Owner Email</label>
+    <input id="ownerEmail" type="email" placeholder="your@email.com">
+
+    <label>GitHub Username</label>
+    <input id="githubUsername" placeholder="github username">
+
+    <label>Wallet Address</label>
+    <input id="walletAddress" placeholder="0x...">
+
+    <button onclick="claimOwnership()">Claim Ownership</button>
+
+    <p id="status" class="small"></p>
+  </div>
+
+  <div class="card">
+    <h2>After claiming</h2>
+    <p class="small">
+      Open the owner dashboard using the same email.
+    </p>
+    <button class="secondary" onclick="location.href='my-agents.html'">
+      Open Owner Dashboard
+    </button>
+  </div>
+</div>
+
+<script>
+const client = supabase.createClient(
+  "https://vxbujgzswbakdjnfgetk.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ4YnVqZ3pzd2Jha2RqbmZnZXRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAwMjczNzMsImV4cCI6MjA4NTYwMzM3M30.__xPyuta8X-U18Bofb-wkDeDexUtsNwfAivzuDFDXN0"
+);
+
+const params = new URLSearchParams(location.search);
+const codeFromUrl = params.get("code");
+
+if(codeFromUrl){
+  claimCode.value = codeFromUrl;
+}
+
+async function claimOwnership(){
+  status.className = "small";
+  status.innerText = "Registering ownership...";
+
+  const code = claimCode.value.trim();
+  const email = ownerEmail.value.trim();
+  const github = githubUsername.value.trim();
+  const wallet = walletAddress.value.trim();
+
+  if(!code || !email){
+    status.className = "err";
+    status.innerText = "Claim code and owner email are required.";
+    return;
+  }
+
+  const { data, error } = await client.rpc("register_agent_owner_from_claim", {
+    p_claim_code: code,
+    p_owner_email: email,
+    p_owner_wallet_address: wallet || null,
+    p_owner_github_username: github || null,
+    p_verification_method: "public_claim_page",
+    p_verification_signature: "public_claim_manual"
+  });
+
+  if(error || !data || data.ok !== true){
+    status.className = "err";
+    status.innerText = "Claim failed. Check the claim code and try again.";
+    console.error(error || data);
+    return;
+  }
+
+  status.className = "ok";
+  status.innerHTML =
+    "Ownership registered successfully.<br><br>" +
+    "<b>Agent:</b> " + data.agent_name + "<br>" +
+    "<b>Owner:</b> " + data.owner_email + "<br><br>" +
+    "Now open the Owner Dashboard using the same email.";
+}
+</script>
+</body>
+</html>
