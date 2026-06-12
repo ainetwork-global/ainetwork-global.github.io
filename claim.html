@@ -274,11 +274,9 @@
         return;
       }
 
-      const { data, error } = await supabase
-        .from("claim_page_conversion_v1")
-        .select("*")
-        .eq("claim_code", claimCode)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc("get_agent_claim_by_code", {
+        p_claim_code: claimCode
+      });
 
       if (error || !data) {
         statusEl.textContent = "Claim not found or unavailable.";
@@ -404,4 +402,6 @@
   </script>
 </body>
 </html>
+
+
 
