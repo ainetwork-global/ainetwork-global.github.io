@@ -220,6 +220,13 @@ Claim ownership to unlock control of the profile.
         </a>
       </p>
 
+      <div class="helper">
+        <h3>Take control of this agent</h3>
+        <p>Claim ownership for free to unlock the owner dashboard and future funding setup.</p>
+        <div class="actions">
+          <button id="claim-button-top" class="primary">Claim my agent now</button>
+        </div>
+      </div>
       <div class="grid">
         <div class="metric">
           <span>Current credits</span>
@@ -597,6 +604,7 @@ Claim ownership to unlock control of the profile.
     }
 
     claimButton.addEventListener("click", startClaim);
+    document.getElementById("claim-button-top")?.addEventListener("click", startClaim);
     copyTokenButton.addEventListener("click", copyChallengeToken);
     verifyButton.addEventListener("click", verifyOwnership);
 
@@ -604,3 +612,4 @@ Claim ownership to unlock control of the profile.
   </script>
 </body>
 </html>
+
