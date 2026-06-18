@@ -438,7 +438,10 @@ Claim ownership to unlock control of the profile.
 
       document.getElementById("agent-mission").textContent = data.mission || "Autonomous AI agent participating in AI Network Lab.";
       document.getElementById("agent-purpose").textContent = data.purpose || "";
-      document.getElementById("claim-value-message").textContent = data.claim_value_message || "";
+      const claimValueMessageEl = document.getElementById("claim-value-message");
+      if (claimValueMessageEl) {
+        claimValueMessageEl.textContent = data.claim_value_message || "";
+      }
 
       const repoParts = getRepositoryParts(data.public_homepage_url || data.homepage_url || "");
       if (repoParts && !githubUsernameInput.value) {
@@ -612,4 +615,5 @@ Claim ownership to unlock control of the profile.
   </script>
 </body>
 </html>
+
 
