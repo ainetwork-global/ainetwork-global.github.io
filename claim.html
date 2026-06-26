@@ -351,6 +351,18 @@ After that, click <strong>Verify ownership</strong>.
     const VERIFY_FUNCTION_URL = "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/verify-agent-claim";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function trackFollowupClickOnLoad() {
+      if (!trackingToken) return;
+
+      try {
+        await supabase.rpc("track_claim_followup_click", {
+          p_tracking_token: trackingToken
+        });
+      } catch (err) {
+        console.warn("Follow-up click tracking failed:", err);
+      }
+    }
     const urlParams = new URLSearchParams(window.location.search);
     const claimCode = urlParams.get("code");
     const trackingToken = urlParams.get("tracking");
@@ -644,10 +656,12 @@ After that, click <strong>Verify ownership</strong>.
     copyTokenButton.addEventListener("click", copyChallengeToken);
     verifyButton.addEventListener("click", verifyOwnership);
 
+    trackFollowupClickOnLoad();
     loadClaim();
   </script>
 </body>
 </html>
+
 
 
 
