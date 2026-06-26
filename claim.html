@@ -351,7 +351,9 @@ After that, click <strong>Verify ownership</strong>.
     const VERIFY_FUNCTION_URL = "https://vxbujgzswbakdjnfgetk.supabase.co/functions/v1/verify-agent-claim";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const claimCode = new URLSearchParams(window.location.search).get("code");
+    const urlParams = new URLSearchParams(window.location.search);
+    const claimCode = urlParams.get("code");
+    const trackingToken = urlParams.get("tracking");
 
     const statusEl = document.getElementById("status");
     const claimBox = document.getElementById("claim-box");
@@ -408,6 +410,17 @@ After that, click <strong>Verify ownership</strong>.
       try {
         if (!currentClaim || !currentClaim.agent_id) {
           return;
+        }
+
+        if (trackingToken) {
+          await supabase
+            .from("claim_followup_jobs")
+            .update({
+              clicked_at: new Date().toISOString(),
+              conversion_stage: "claim_page_clicked",
+              updated_at: new Date().toISOString()
+            })
+            .eq("tracking_token", trackingToken);
         }
 
         await supabase.from("agent_claim_events").insert({
@@ -635,5 +648,6 @@ After that, click <strong>Verify ownership</strong>.
   </script>
 </body>
 </html>
+
 
 
