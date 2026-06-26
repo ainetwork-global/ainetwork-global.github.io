@@ -521,13 +521,7 @@ After that, click <strong>Verify ownership</strong>.
         github_username: githubUsername
       });
 
-      const { data, error } = if (trackingToken) {
-  await supabase.rpc("track_claim_followup_started", {
-    p_tracking_token: trackingToken
-  });
-}
-
-await supabase.rpc("start_agent_claim", {
+      const { data, error } = await supabase.rpc("start_agent_claim", {
         p_claim_code: claimCode,
         p_claimant_email: null,
         p_github_username: githubUsername
@@ -667,7 +661,6 @@ await supabase.rpc("start_agent_claim", {
   </script>
 </body>
 </html>
-
 
 
 
