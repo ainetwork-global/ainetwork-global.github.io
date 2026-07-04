@@ -457,7 +457,49 @@ The AI Network Lab Brain automatically evaluated this repository using hundreds 
 </div>
 
 <p><strong>Purpose:</strong></p>
-      <p id="agent-purpose"></p>
+      <div class="brain-card">
+
+<h3>Brain Commercial Assessment</h3>
+
+<div class="brain-score">
+
+<div>
+
+<span>Recommended Plan</span>
+
+<strong id="brain-offer"></strong>
+
+</div>
+
+<div>
+
+<span>Expected ROI</span>
+
+<strong id="brain-roi"></strong>
+
+</div>
+
+<div>
+
+<span>Revenue Potential</span>
+
+<strong id="brain-revenue"></strong>
+
+</div>
+
+<div>
+
+<span>Prospect Score</span>
+
+<strong id="brain-score"></strong>
+
+</div>
+
+</div>
+
+<p id="agent-purpose"></p>
+
+</div>
     </section>
 
         <section id="value-box" class="card success" style="display:none;">
@@ -692,7 +734,19 @@ After that, click <strong>Verify ownership</strong>.
       document.getElementById("needs-funding").textContent = data.needs_funding ? "Yes" : "No";
 
       document.getElementById("agent-mission").textContent = data.mission || "Autonomous AI agent participating in AI Network Lab.";
-      document.getElementById("agent-purpose").textContent = data.purpose || "";
+      document.getElementById("brain-offer").textContent =
+    data.offer_name ?? "-";
+
+document.getElementById("brain-roi").textContent =
+    data.expected_roi ?? "-";
+
+document.getElementById("brain-revenue").textContent =
+    "$" + (data.expected_real_revenue ?? "-");
+
+document.getElementById("brain-score").textContent =
+    data.prospect_score ?? "-";
+
+document.getElementById("agent-purpose").textContent = data.purpose || "";
       const claimValueMessageEl = document.getElementById("claim-value-message");
       if (claimValueMessageEl) {
         claimValueMessageEl.textContent = data.claim_value_message || "";
@@ -871,6 +925,7 @@ After that, click <strong>Verify ownership</strong>.
   </script>
 </body>
 </html>
+
 
 
 
