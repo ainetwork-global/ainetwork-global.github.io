@@ -618,6 +618,28 @@ After that, click <strong>Verify ownership</strong>.
     const urlParams = new URLSearchParams(window.location.search);
     const claimCode = urlParams.get("code");
     const trackingToken = urlParams.get("tracking");
+    const claimSessionId =
+      localStorage.getItem("ai_network_claim_session_id") ||
+      crypto.randomUUID();
+
+    localStorage.setItem("ai_network_claim_session_id", claimSessionId);
+
+    async function trackClaimPageEvent(eventName, eventValue = null, metadata = {}) {
+      try {
+        if (!claimCode) return;
+
+        await supabase.rpc("track_claim_page_event", {
+          p_claim_code: claimCode,
+          p_session_id: claimSessionId,
+          p_event_name: eventName,
+          p_event_value: eventValue,
+          p_metadata: metadata
+        });
+      } catch (err) {
+        console.warn("Claim page event tracking failed:", eventName, err);
+      }
+    }
+
 
     const statusEl = document.getElementById("status");
     const claimBox = document.getElementById("claim-box");
@@ -775,12 +797,14 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
         await logClaimEvent("claim_github_username_missing");
 
         statusEl.textContent = "Enter your GitHub username to start claim verification.";
+        await trackClaimPageEvent("github_username_missing");
         githubUsernameInput.focus();
         claimButton.disabled = false;
         claimButton.textContent = "Start claim verification";
         return;
       }
 
+      await trackClaimPageEvent("github_username_submitted", githubUsername);
       await logClaimEvent("claim_github_username_submitted", {
         github_username: githubUsername
       });
@@ -916,10 +940,12 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
     }
 
     claimButton.addEventListener("click", async () => {
+      await trackClaimPageEvent("form_cta_clicked");
       await logClaimEvent("claim_cta_form_clicked");
       await startClaim();
     });
     document.getElementById("claim-button-top")?.addEventListener("click", async () => {
+      await trackClaimPageEvent("top_cta_clicked");
       await logClaimEvent("claim_cta_top_clicked");
       await startClaim();
     });
@@ -927,10 +953,12 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
     verifyButton.addEventListener("click", verifyOwnership);
 
     trackFollowupClickOnLoad();
+    trackClaimPageEvent("page_loaded");
     loadClaim();
   </script>
 </body>
 </html>
+
 
 
 
