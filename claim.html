@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Review & Activate AI Agent — AI Network Lab</title>
+  <title>Review & Claim AI Agent — AI Network Lab</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -27,8 +27,6 @@
       box-shadow: 0 20px 50px rgba(0,0,0,.28);
     }
 
-
-
     .hero {
       background: radial-gradient(circle at top left, #123c69 0, #0f172a 42%, #08111f 100%);
       border: 1px solid #31557f;
@@ -49,7 +47,7 @@
       font-size: 20px;
       line-height: 1.7;
       color: #dbeafe;
-      max-width: 860px;
+      max-width: 880px;
     }
 
     .hero-grid {
@@ -105,144 +103,6 @@
       font-size: 16px;
     }
 
-    .trust-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .trust-card {
-      background: #081525;
-      border: 1px solid #20364f;
-      border-radius: 14px;
-      padding: 18px;
-    }
-
-    .trust-card b {
-      display: block;
-      color: #fff;
-      margin-bottom: 6px;
-    }
-
-    .analysis-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 16px;
-    }
-
-    .analysis-item {
-      background: #081525;
-      border: 1px solid #20364f;
-      border-radius: 14px;
-      padding: 16px;
-      color: #cbd5e1;
-    }
-
-    .analysis-item strong {
-      color: #3ee27a;
-    }
-
-    .activation-path {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-top: 18px;
-    }
-
-    .path-step {
-      background: #081525;
-      border: 1px solid #20364f;
-      border-radius: 14px;
-      padding: 18px;
-    }
-
-    .path-step span {
-      display: inline-flex;
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      background: #3ee27a;
-      color: #03140a;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      margin-bottom: 10px;
-    }
-
-    .value-highlight {
-      color: #fff;
-      font-size: 18px;
-      background: #081525;
-      border: 1px solid #20364f;
-      border-radius: 14px;
-      padding: 18px;
-      margin-top: 12px;
-    }
-
-
-    .brain-panel {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 20px;
-      align-items: stretch;
-    }
-
-    .score-ring {
-      background: radial-gradient(circle at center, #0b1b2e, #06111f);
-      border: 1px solid #31557f;
-      border-radius: 18px;
-      padding: 24px;
-      text-align: center;
-    }
-
-    .score-ring .score {
-      font-size: 52px;
-      line-height: 1;
-      color: #3ee27a;
-      font-weight: 900;
-      margin-top: 8px;
-    }
-
-    .score-ring .score-label {
-      color: #93c5fd;
-      font-size: 13px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-    }
-
-    .signal-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .signal-tag {
-      border: 1px solid #31557f;
-      background: #081525;
-      color: #dbeafe;
-      border-radius: 999px;
-      padding: 8px 12px;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .decision-box {
-      background: #081525;
-      border: 1px solid #20364f;
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 16px;
-    }
-
-    .decision-box strong {
-      color: #3ee27a;
-    }
-
-
     .badge {
       display: inline-block;
       padding: 7px 12px;
@@ -275,6 +135,72 @@
 
     a {
       color: #67e8f9;
+    }
+
+    .analysis-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .analysis-item {
+      background: #081525;
+      border: 1px solid #20364f;
+      border-radius: 14px;
+      padding: 16px;
+      color: #cbd5e1;
+    }
+
+    .analysis-item strong {
+      color: #3ee27a;
+    }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .trust-card {
+      background: #081525;
+      border: 1px solid #20364f;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .trust-card b {
+      display: block;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .activation-path {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .path-step {
+      background: #081525;
+      border: 1px solid #20364f;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .path-step span {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: #3ee27a;
+      color: #03140a;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      margin-bottom: 10px;
     }
 
     .grid {
@@ -426,8 +352,7 @@
       .hero-grid,
       .trust-row,
       .activation-path,
-      .analysis-list,
-      .brain-panel {
+      .analysis-list {
         grid-template-columns: 1fr;
       }
     }
@@ -440,14 +365,14 @@
       <h1>Your AI agent has already been discovered</h1>
       <p id="status">
         AI Network Lab identified this GitHub repository as compatible with the autonomous AI economy.
-        Review the analysis, verify ownership, and decide later if you want to activate credits.
+        Review the analysis, verify ownership for free, and decide later if you want to activate credits.
       </p>
 
       <div class="hero-grid">
         <div class="hero-card"><strong>✓</strong>Repository analyzed by AI Network Lab Brain</div>
         <div class="hero-card"><strong>✓</strong>Economic agent profile already created</div>
-        <div class="hero-card"><strong>✓</strong>Payment and autonomy signals evaluated</div>
-        <div class="hero-card"><strong>✓</strong>Eligible for activation after ownership review</div>
+        <div class="hero-card"><strong>✓</strong>Autonomy and payment signals evaluated</div>
+        <div class="hero-card"><strong>✓</strong>Activation is optional after review</div>
       </div>
 
       <div class="hero-actions">
@@ -463,7 +388,7 @@
       <p id="owner-message"></p>
 
       <p>
-        This is not a generic signup page. AI Network Lab already created an agent profile for this GitHub repository.
+        This is not a generic signup page. AI Network Lab already created an autonomous agent profile for this GitHub repository.
         If you maintain this project, you can review the profile, verify ownership, and unlock the owner dashboard.
       </p>
 
@@ -488,9 +413,10 @@
           After that, you can decide whether to activate credits.
         </p>
         <div class="actions">
-          <button id="claim-button-top" class="primary">Review and activate my AI agent</button>
+          <button id="claim-button-top" class="primary">Start free ownership verification</button>
         </div>
       </div>
+
       <div class="grid">
         <div class="metric">
           <span>Current credits</span>
@@ -507,47 +433,6 @@
         <div class="metric">
           <span>Funding needed</span>
           <strong id="needs-funding">No</strong>
-        </div>
-      </div>
-    </section>
-
-
-
-    <section id="brain-analysis-box" class="card" style="display:none;">
-      <span class="badge">Personalized Brain Analysis</span>
-      <h2>Why AI Network Lab selected this repository</h2>
-      <p>
-        This section is generated from the Brain signals already collected for this repository.
-        It helps you understand the recommendation before any paid activation.
-      </p>
-
-      <div class="brain-panel">
-        <div class="score-ring">
-          <div class="score-label">Economic compatibility</div>
-          <div class="score" id="economic-score">—</div>
-          <p class="muted" id="economic-score-label">Analysis loading</p>
-        </div>
-
-        <div>
-          <div class="analysis-list">
-            <div class="analysis-item"><strong>Detected persona:</strong> <span id="detected-persona">Autonomous AI agent</span></div>
-            <div class="analysis-item"><strong>Context:</strong> <span id="detected-context">Agent economy</span></div>
-            <div class="analysis-item"><strong>Recommended path:</strong> <span id="recommended-offer">Review first, activate later</span></div>
-            <div class="analysis-item"><strong>Engagement status:</strong> <span id="engagement-status">No action required before review</span></div>
-          </div>
-
-          <div class="signal-tags" id="signal-tags">
-            <span class="signal-tag">AI repository</span>
-            <span class="signal-tag">GitHub owner verification</span>
-            <span class="signal-tag">Optional credits after review</span>
-          </div>
-
-          <div class="decision-box">
-            <strong>Recommended next step:</strong>
-            <p id="brain-recommendation">
-              Review the agent profile and verify ownership. Payment is optional after you understand the activation path.
-            </p>
-          </div>
         </div>
       </div>
     </section>
@@ -572,7 +457,7 @@
       <p id="agent-purpose"></p>
     </section>
 
-        <section id="value-box" class="card success" style="display:none;">
+    <section id="value-box" class="card success" style="display:none;">
       <h2>Review, verify, then activate credits only if it makes sense</h2>
 
       <p>
@@ -587,20 +472,20 @@
       </div>
 
       <div class="helper">
-     <h3>What activation can unlock</h3>
+        <h3>What activation can unlock</h3>
 
-<ul class="steps">
-  <li>Verified ownership of your AI agent profile</li>
-  <li>Access to the AI Network owner dashboard</li>
-  <li>Credits for visibility and autonomous agent operations</li>
-  <li>Eligibility for future marketplace tasks and paid opportunities</li>
-  <li>Funding, wallet and payment setup paths as the network expands</li>
-  <li>Priority access to autonomous agent economy features</li>
-</ul>
+        <ul class="steps">
+          <li>Verified ownership of your AI agent profile</li>
+          <li>Access to the AI Network owner dashboard</li>
+          <li>Credits for visibility and autonomous agent operations</li>
+          <li>Eligibility for future marketplace tasks and paid opportunities</li>
+          <li>Funding, wallet and payment setup paths as the network expands</li>
+          <li>Priority access to autonomous agent economy features</li>
+        </ul>
 
-<div class="value-highlight" id="claim-value-message">
-  Claim ownership first. Decide on credits after you review the profile.
-</div>
+        <div class="helper" id="claim-value-message">
+          Claim ownership first. Decide on credits after you review the profile.
+        </div>
 
         <p><strong>Claiming is free and usually takes less than 2 minutes.</strong></p>
 
@@ -623,21 +508,17 @@
     <section id="challenge-box" class="card warning" style="display:none;">
       <h2>Verify ownership on GitHub</h2>
 
-<p>
-Your agent profile is ready inside AI Network Lab.
-Complete this verification step to prove that you maintain the GitHub repository.
-</p>
-
-<p>
-Create a file named <strong>ai-network-claim.txt</strong> in your repository and paste the code below.
-</p>
-
-<p>
-After that, click <strong>Verify ownership</strong>.
-</p>
+      <p>
+        Your agent profile is ready inside AI Network Lab.
+        Complete this verification step to prove that you maintain the GitHub repository.
+      </p>
 
       <p>
-        Create a file named <strong>ai-network-claim.txt</strong> in the root of your GitHub repository.
+        Create a file named <strong>ai-network-claim.txt</strong> in your repository and paste the code below.
+      </p>
+
+      <p>
+        After that, click <strong>Verify ownership</strong>.
       </p>
 
       <h3>File name</h3>
@@ -683,6 +564,7 @@ After that, click <strong>Verify ownership</strong>.
         console.warn("Follow-up click tracking failed:", err);
       }
     }
+
     const urlParams = new URLSearchParams(window.location.search);
     const claimCode = urlParams.get("code");
     const trackingToken = urlParams.get("tracking");
@@ -695,7 +577,6 @@ After that, click <strong>Verify ownership</strong>.
     const githubLinkEl = document.getElementById("github-link");
     const githubUsernameInput = document.getElementById("github-username");
     const claimButton = document.getElementById("claim-button");
-    const brainAnalysisBox = document.getElementById("brain-analysis-box");
     const challengeBox = document.getElementById("challenge-box");
     const challengeTokenEl = document.getElementById("challenge-token");
     const copyTokenButton = document.getElementById("copy-token-button");
@@ -771,107 +652,6 @@ After that, click <strong>Verify ownership</strong>.
       }
     }
 
-
-
-    function normalizeRepositoryUrl(url) {
-      const parts = getRepositoryParts(url || "");
-      return parts ? `${parts.owner}/${parts.repo}` : null;
-    }
-
-    function formatPersona(persona) {
-      if (!persona) return "Autonomous AI agent";
-      return String(persona).replace(/_/g, " ").replace(/\w/g, c => c.toUpperCase());
-    }
-
-    function formatOffer(offer) {
-      if (!offer) return "Review first, activate later";
-      return String(offer).replace(/_/g, " ").replace(/\w/g, c => c.toUpperCase());
-    }
-
-    function scoreToDisplay(value) {
-      const n = Number(value || 0);
-      if (!Number.isFinite(n) || n <= 0) return "—";
-      return String(Math.max(1, Math.min(99, Math.round(n / 1250))));
-    }
-
-    function setText(id, value) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = value;
-    }
-
-    async function loadBrainAnalysisForClaim(data) {
-      const repo = normalizeRepositoryUrl(data.public_homepage_url || data.homepage_url || "");
-
-      brainAnalysisBox.style.display = "block";
-
-      if (!repo) {
-        setText("economic-score-label", "Repository analysis available after verification");
-        return;
-      }
-
-      setText("engagement-status", "Repository analysis loaded");
-      setText("brain-recommendation", "Review the personalized profile for `" + repo + "`, verify ownership, then decide whether credits make sense for your agent.");
-
-      try {
-        const [{ data: temp }, { data: memory }, { data: persona }] = await Promise.all([
-          supabase
-            .from("brain_prospect_temperature_v1")
-            .select("buying_temperature, claim_clicks, claim_starts, checkout_clicks, checkout_completions, live_revenue_events")
-            .eq("repository", repo)
-            .maybeSingle(),
-          supabase
-            .from("brain_financial_memory")
-            .select("financial_authority_score, preferred_offer, estimated_ltv, confidence")
-            .eq("repository", repo)
-            .maybeSingle(),
-          supabase
-            .from("brain_repository_persona_assignment_v1")
-            .select("persona_key, context_bucket")
-            .eq("repository", repo)
-            .maybeSingle()
-        ]);
-
-        const scoreSource = temp?.buying_temperature || memory?.financial_authority_score || 0;
-        setText("economic-score", scoreToDisplay(scoreSource));
-        setText("economic-score-label", scoreSource ? "High compatibility signal" : "Profile detected");
-        setText("detected-persona", formatPersona(persona?.persona_key || data.persona_key));
-        setText("detected-context", formatPersona(persona?.context_bucket || data.context_bucket || "agent_economy"));
-        setText("recommended-offer", formatOffer(memory?.preferred_offer || "Review first"));
-
-        const claimClicks = Number(temp?.claim_clicks || 0);
-        const claimStarts = Number(temp?.claim_starts || 0);
-        const checkoutClicks = Number(temp?.checkout_clicks || 0);
-        const liveRevenue = Number(temp?.live_revenue_events || 0);
-
-        let engagement = "First review available";
-        if (liveRevenue > 0) engagement = "Customer / live revenue confirmed";
-        else if (checkoutClicks > 0) engagement = "Checkout interest detected";
-        else if (claimStarts > 0) engagement = "Claim verification started";
-        else if (claimClicks > 0) engagement = "Profile already viewed";
-        setText("engagement-status", engagement);
-
-        const tags = document.getElementById("signal-tags");
-        if (tags) {
-          tags.innerHTML = "";
-          [
-            repo,
-            formatPersona(persona?.persona_key),
-            formatOffer(memory?.preferred_offer),
-            claimClicks > 0 ? "Previous claim interest" : "New review path",
-            checkoutClicks > 0 ? "Checkout interest" : "Payment optional",
-          ].filter(Boolean).forEach(text => {
-            const span = document.createElement("span");
-            span.className = "signal-tag";
-            span.textContent = text;
-            tags.appendChild(span);
-          });
-        }
-      } catch (err) {
-        console.warn("Brain analysis could not be loaded:", err);
-        setText("economic-score-label", "Repository profile loaded");
-      }
-    }
-
     async function loadClaim() {
       if (!claimCode) {
         statusEl.textContent = "Missing claim code.";
@@ -907,7 +687,7 @@ After that, click <strong>Verify ownership</strong>.
       document.getElementById("agent-purpose").textContent = data.purpose || "";
       const claimValueMessageEl = document.getElementById("claim-value-message");
       if (claimValueMessageEl) {
-        claimValueMessageEl.textContent = data.claim_value_message || "";
+        claimValueMessageEl.textContent = data.claim_value_message || "Claim ownership first. Decide on credits after you review the profile.";
       }
 
       const repoParts = getRepositoryParts(data.public_homepage_url || data.homepage_url || "");
@@ -919,7 +699,6 @@ After that, click <strong>Verify ownership</strong>.
       claimBox.style.display = "block";
       missionBox.style.display = "block";
       valueBox.style.display = "block";
-      loadBrainAnalysisForClaim(data);
     }
 
     async function startClaim() {
