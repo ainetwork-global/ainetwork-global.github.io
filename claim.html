@@ -915,8 +915,14 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
       verifyButton.textContent = "Verified";
     }
 
-    claimButton.addEventListener("click", startClaim);
-    document.getElementById("claim-button-top")?.addEventListener("click", startClaim);
+    claimButton.addEventListener("click", async () => {
+      await logClaimEvent("claim_cta_form_clicked");
+      await startClaim();
+    });
+    document.getElementById("claim-button-top")?.addEventListener("click", async () => {
+      await logClaimEvent("claim_cta_top_clicked");
+      await startClaim();
+    });
     copyTokenButton.addEventListener("click", copyChallengeToken);
     verifyButton.addEventListener("click", verifyOwnership);
 
@@ -925,6 +931,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
