@@ -627,13 +627,19 @@ After that, click <strong>Verify ownership</strong>.
       try {
         if (!claimCode) return;
 
-        await supabase.rpc("track_claim_page_event", {
+        const { data, error } = await supabase.rpc("track_claim_page_event", {
           p_claim_code: claimCode,
           p_session_id: claimSessionId,
           p_event_name: eventName,
           p_event_value: eventValue,
           p_metadata: metadata
         });
+
+        if (error) {
+          console.error("TRACK RPC ERROR", error);
+          alert(JSON.stringify(error));
+        }
+
       } catch (err) {
         console.error("TRACK ERROR", eventName, err);
  alert("TRACK ERROR: " + JSON.stringify(err));
@@ -960,6 +966,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
