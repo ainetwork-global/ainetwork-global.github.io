@@ -617,7 +617,6 @@ After that, click <strong>Verify ownership</strong>.
     }
     const urlParams = new URLSearchParams(window.location.search);
     const claimCode = urlParams.get("code");
-    const trackingToken = urlParams.get("tracking");
     const claimSessionId =
       localStorage.getItem("ai_network_claim_session_id") ||
       crypto.randomUUID();
@@ -639,6 +638,8 @@ After that, click <strong>Verify ownership</strong>.
         console.warn("Claim page event tracking failed:", eventName, err);
       }
     }
+
+    const trackingToken = urlParams.get("tracking");
 
 
     const statusEl = document.getElementById("status");
@@ -958,6 +959,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
