@@ -635,7 +635,8 @@ After that, click <strong>Verify ownership</strong>.
           p_metadata: metadata
         });
       } catch (err) {
-        console.warn("Claim page event tracking failed:", eventName, err);
+        console.error("TRACK ERROR", eventName, err);
+ alert("TRACK ERROR: " + JSON.stringify(err));
       }
     }
 
@@ -959,6 +960,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
