@@ -870,6 +870,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
       githubCreateMainLink.href = buildGitHubCreateFileUrl(repoUrl, "main", currentChallengeToken);
       githubCreateMasterLink.href = buildGitHubCreateFileUrl(repoUrl, "master", currentChallengeToken);
 
+      await trackClaimPageEvent("claim_started");
       challengeBox.style.display = "block";
 
       await logClaimEvent("claim_challenge_created_client_confirmed");
@@ -972,6 +973,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
