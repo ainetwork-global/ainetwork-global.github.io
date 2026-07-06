@@ -623,7 +623,22 @@ After that, click <strong>Verify ownership</strong>.
 
     localStorage.setItem("ai_network_claim_session_id", claimSessionId);
 
-    const headlineVariant = "B";
+    const headlineVariants = ["A", "B"];
+
+let headlineVariant = localStorage.getItem("ai_network_claim_headline_variant");
+
+if (!headlineVariant || !headlineVariants.includes(headlineVariant)) {
+  headlineVariant = headlineVariants[Math.floor(Math.random() * headlineVariants.length)];
+  localStorage.setItem("ai_network_claim_headline_variant", headlineVariant);
+}
+
+if (headlineVariant === "B") {
+  document.querySelector("h1").textContent = "Claim your AI agent ownership in less than 2 minutes";
+  const heroSubtitle = document.querySelector(".hero p");
+  if (heroSubtitle) {
+    heroSubtitle.textContent = "No payment required. No code changes. Verify ownership with one GitHub file.";
+  }
+}
 
     async function trackClaimPageEvent(eventName, eventValue = null, metadata = {}) {
       try {
@@ -979,6 +994,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
