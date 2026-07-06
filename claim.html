@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -442,15 +442,15 @@ The AI Network Lab Brain automatically evaluated this repository using hundreds 
 
 <ul class="steps">
 
-<li>✓ Autonomous AI behavior detected</li>
+<li>âœ“ Autonomous AI behavior detected</li>
 
-<li>✓ Commercial capability detected</li>
+<li>âœ“ Commercial capability detected</li>
 
-<li>✓ Repository indexed by AI Network Lab Brain</li>
+<li>âœ“ Repository indexed by AI Network Lab Brain</li>
 
-<li>✓ Eligible for ownership verification</li>
+<li>âœ“ Eligible for ownership verification</li>
 
-<li>✓ Eligible for future AI marketplace participation</li>
+<li>âœ“ Eligible for future AI marketplace participation</li>
 
 </ul>
 
@@ -750,6 +750,12 @@ After that, click <strong>Verify ownership</strong>.
 
       currentClaim = data;
 
+      await trackClaimPageEvent("claim_data_loaded", null, {
+        agent_id: data.agent_id || null,
+        agent_name: data.agent_name || null,
+        repository: data.public_homepage_url || null
+      });
+
       agentNameEl.textContent = data.agent_name;
       githubLinkEl.href = data.public_homepage_url || data.homepage_url || "#";
       githubLinkEl.textContent = data.public_homepage_url || data.homepage_url || "No repository URL";
@@ -966,6 +972,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
