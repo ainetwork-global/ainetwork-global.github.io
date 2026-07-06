@@ -623,6 +623,8 @@ After that, click <strong>Verify ownership</strong>.
 
     localStorage.setItem("ai_network_claim_session_id", claimSessionId);
 
+    const headlineVariant = "A";
+
     async function trackClaimPageEvent(eventName, eventValue = null, metadata = {}) {
       try {
         if (!claimCode) return;
@@ -632,7 +634,10 @@ After that, click <strong>Verify ownership</strong>.
           p_session_id: claimSessionId,
           p_event_name: eventName,
           p_event_value: eventValue,
-          p_metadata: metadata
+          p_metadata: {
+            headline_variant: headlineVariant,
+            ...metadata
+          }
         });
 
         if (error) {
@@ -974,6 +979,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
