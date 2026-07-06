@@ -842,6 +842,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
         return;
       }
 
+      await trackClaimPageEvent("claim_started_rpc_confirmed");
       await logClaimEvent("claim_started_client_confirmed", {
         github_username: githubUsername
       });
@@ -973,6 +974,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
