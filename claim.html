@@ -335,7 +335,7 @@
   <main class="wrap">
     <section class="hero">
       <span class="badge">AI Network Lab Claim Portal</span>
-      <h1>Your AI agent has already been discovered</h1>
+      <h1>Claim your AI agent ownership in less than 2 minutes</h1>
       <p id="status">
 This GitHub project already has an active AI agent profile inside AI Network Lab.
 Claim ownership to unlock control of the profile.
@@ -623,7 +623,7 @@ After that, click <strong>Verify ownership</strong>.
 
     localStorage.setItem("ai_network_claim_session_id", claimSessionId);
 
-    const headlineVariant = "A";
+    const headlineVariant = "B";
 
     async function trackClaimPageEvent(eventName, eventValue = null, metadata = {}) {
       try {
@@ -798,7 +798,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
         githubUsernameInput.value = repoParts.owner;
       }
 
-      statusEl.textContent = "This agent is available to claim.";
+      statusEl.textContent = "No payment required. No code changes. Verify ownership with one GitHub file.";
       claimBox.style.display = "block";
       missionBox.style.display = "block";
       valueBox.style.display = "block";
@@ -979,6 +979,7 @@ document.getElementById("agent-purpose").textContent = data.purpose || "";
   </script>
 </body>
 </html>
+
 
 
 
