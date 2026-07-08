@@ -700,7 +700,7 @@ conversationBody.innerHTML += `
 }
 
 async function loadMain(){
-const {data,error} = await client.rpc("cfo_dashboard_portal").single();
+const {data,error} = await client.rpc("cfo_dashboard_portal_fast").single();
 
 if(error){
 alert("Erro CFO principal: " + error.message);
@@ -839,4 +839,5 @@ load();
 
 </body>
 </html>
+
 
