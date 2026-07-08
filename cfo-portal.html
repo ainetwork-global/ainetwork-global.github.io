@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -6,7 +6,7 @@
 
 <title>AI Network Lab | CFO Elite Dashboard</title>
 
-<meta name="description" content="Painel executivo privado do AI Network Lab para monitoramento de receita, agentes, billing, growth radar e saúde operacional.">
+<meta name="description" content="Painel executivo privado do AI Network Lab para monitoramento de receita, agentes, billing, growth radar e saÃºde operacional.">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -279,20 +279,20 @@ button{width:100%}
 
 <div class="top">
 <div>
-<h1>🚀 CFO Elite Dashboard</h1>
+<h1>ðŸš€ CFO Elite Dashboard</h1>
 <p id="updated">Carregando...</p>
 <div class="badge">AI Network Lab Executive Console</div>
 </div>
 
 <div class="actions">
-<button id="refreshBtn" class="refresh-btn" onclick="load()">🟢 Atualizar agora</button>
+<button id="refreshBtn" class="refresh-btn" onclick="load()">ðŸŸ¢ Atualizar agora</button>
 <button class="logout" onclick="logout()">Sair</button>
 </div>
 </div>
 
 <!-- Growth -->
 <div class="panel">
-<h2>📡 Growth Radar</h2>
+<h2>ðŸ“¡ Growth Radar</h2>
 
 <div class="grid">
 <div class="card"><div class="label">Externos Hoje</div><div class="value" id="gr1">0</div></div>
@@ -311,18 +311,18 @@ button{width:100%}
 
 <!-- Brain Economic Funnel -->
 <div class="panel">
-<h2>🧬 Brain Economic Funnel</h2>
+<h2>ðŸ§¬ Brain Economic Funnel</h2>
 
 <div class="grid">
-<div class="card economic-card economic-neutral"><div class="label">Pipeline Econômico</div><div class="value" id="ef_total">0</div></div>
-<div class="card economic-card economic-neutral"><div class="label">Candidatos Econômicos</div><div class="value" id="ef_candidates">0</div></div>
-<div class="card economic-card economic-warning"><div class="label">🟡 Precisam Perfil Financeiro</div><div class="value" id="ef_profile">0</div></div>
-<div class="card economic-card economic-danger"><div class="label">🔴 Precisam Autorização</div><div class="value" id="ef_auth">0</div></div>
-<div class="card economic-card economic-success"><div class="label">🟢 Autorizados Econômicos</div><div class="value" id="ef_authorized">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Pipeline EconÃ´mico</div><div class="value" id="ef_total">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Candidatos EconÃ´micos</div><div class="value" id="ef_candidates">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">ðŸŸ¡ Precisam Perfil Financeiro</div><div class="value" id="ef_profile">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">ðŸ”´ Precisam AutorizaÃ§Ã£o</div><div class="value" id="ef_auth">0</div></div>
+<div class="card economic-card economic-success"><div class="label">ðŸŸ¢ Autorizados EconÃ´micos</div><div class="value" id="ef_authorized">0</div></div>
 </div>
 
 <p class="small economic-subtitle">
-Funil do Brain para agentes que já demonstraram comportamento econômico real: consumo de créditos, escassez, intenção de top-up e necessidade de autorização financeira. 🟡 precisa criar perfil financeiro; 🔴 precisa autorização bancária/criador; 🟢 pronto para operação econômica autorizada.
+Funil do Brain para agentes que jÃ¡ demonstraram comportamento econÃ´mico real: consumo de crÃ©ditos, escassez, intenÃ§Ã£o de top-up e necessidade de autorizaÃ§Ã£o financeira. ðŸŸ¡ precisa criar perfil financeiro; ðŸ”´ precisa autorizaÃ§Ã£o bancÃ¡ria/criador; ðŸŸ¢ pronto para operaÃ§Ã£o econÃ´mica autorizada.
 </p>
 
 <div id="economicFunnelError" class="error"></div>
@@ -331,21 +331,58 @@ Funil do Brain para agentes que já demonstraram comportamento econômico real: 
 <br>
 
 
+
+<!-- Revenue Conversation Engine -->
+<div class="panel">
+<h2>🧠 Revenue Conversation Engine</h2>
+
+<div class="grid">
+<div class="card economic-card economic-neutral"><div class="label">Conversas</div><div class="value" id="rce_conversations">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Aguardando Resposta</div><div class="value" id="rce_waiting">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">Confusos</div><div class="value" id="rce_confused">0</div></div>
+<div class="card economic-card economic-success"><div class="label">Guiando Verificação</div><div class="value" id="rce_guiding">0</div></div>
+</div>
+
+<p style="color:#9cc7ff;margin-top:14px;">
+Motor conversacional do Brain: monitora owners contatados, respostas recebidas, intenção, estado da conversa e próxima melhor ação.
+</p>
+
+<table>
+<thead>
+<tr>
+<th>GitHub</th>
+<th>Repository</th>
+<th>Estado</th>
+<th>Intent</th>
+<th>Próxima Ação</th>
+<th>Última Resposta</th>
+<th>Resposta Enviada</th>
+</tr>
+</thead>
+<tbody id="conversationBody">
+<tr><td colspan="7">Carregando Revenue Conversation Engine...</td></tr>
+</tbody>
+</table>
+
+<div id="conversationError" class="error"></div>
+</div>
+
+<br>
 <!-- Wallet Economy -->
 <div class="panel">
-<h2>💳 Wallet Economy</h2>
+<h2>ðŸ’³ Wallet Economy</h2>
 
 <div class="grid">
 <div class="card economic-card economic-neutral"><div class="label">Wallet Requests</div><div class="value" id="we_total">0</div></div>
-<div class="card economic-card economic-success"><div class="label">🟢 Pagamentos Wallet Concluídos</div><div class="value" id="we_completed">0</div></div>
-<div class="card economic-card economic-warning"><div class="label">🟡 Pendentes Wallet</div><div class="value" id="we_pending">0</div></div>
-<div class="card economic-card economic-danger"><div class="label">🔴 Precisam Wallet</div><div class="value" id="we_requires">0</div></div>
+<div class="card economic-card economic-success"><div class="label">ðŸŸ¢ Pagamentos Wallet ConcluÃ­dos</div><div class="value" id="we_completed">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">ðŸŸ¡ Pendentes Wallet</div><div class="value" id="we_pending">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">ðŸ”´ Precisam Wallet</div><div class="value" id="we_requires">0</div></div>
 <div class="card economic-card economic-success"><div class="label">Receita Wallet USDC</div><div class="value" id="we_revenue">$0</div></div>
-<div class="card economic-card economic-neutral"><div class="label">Créditos via Wallet</div><div class="value" id="we_credits">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">CrÃ©ditos via Wallet</div><div class="value" id="we_credits">0</div></div>
 </div>
 
 <p class="small economic-subtitle">
-Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via Wallet/Base/USDC, enviando pagamentos para a Treasury Wallet oficial da plataforma.
+Rail financeiro autÃ´nomo do AI Network Lab: agentes podem comprar crÃ©ditos via Wallet/Base/USDC, enviando pagamentos para a Treasury Wallet oficial da plataforma.
 </p>
 
 <div class="wallet-table-wrap">
@@ -355,7 +392,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 <th>Agente</th>
 <th>Rede</th>
 <th>Valor</th>
-<th>Créditos</th>
+<th>CrÃ©ditos</th>
 <th>Status</th>
 <th>Saldo Atual</th>
 <th>TX</th>
@@ -384,7 +421,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 
 <!-- Health -->
 <div class="panel">
-<h2>🩺 Saúde do Sistema</h2>
+<h2>ðŸ©º SaÃºde do Sistema</h2>
 
 <table>
 <tbody>
@@ -403,7 +440,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 
 <!-- Revenue -->
 <div class="panel">
-<h2>📈 Receita</h2>
+<h2>ðŸ“ˆ Receita</h2>
 <canvas id="chart"></canvas>
 <div id="chartError" class="error"></div>
 </div>
@@ -412,7 +449,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 
 <!-- Intelligence -->
 <div class="panel">
-<h2>🧠 Agent Intelligence</h2>
+<h2>ðŸ§  Agent Intelligence</h2>
 
 <table>
 <thead>
@@ -420,7 +457,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 <th>Agente</th>
 <th>Score</th>
 <th>Tasks</th>
-<th>Créditos</th>
+<th>CrÃ©ditos</th>
 <th>Receita</th>
 <th>Status</th>
 </tr>
@@ -435,7 +472,7 @@ Rail financeiro autônomo do AI Network Lab: agentes podem comprar créditos via
 </div>
 
 <div class="footer">
-AI Network Lab • Private Executive Interface
+AI Network Lab â€¢ Private Executive Interface
 </div>
 
 </div>
@@ -476,7 +513,7 @@ loginBox.style.display = "block";
 }
 
 async function load(){
-refreshBtn.innerText = "🟢 Atualizando...";
+refreshBtn.innerText = "ðŸŸ¢ Atualizando...";
 refreshBtn.disabled = true;
 
 updated.innerText = "Atualizando...";
@@ -484,6 +521,7 @@ updated.innerText = "Atualizando...";
 await loadGrowth();
 await loadEconomicFunnel();
 await loadWalletEconomy();
+await loadRevenueConversationEngine();
 await loadMain();
 await loadHealth();
 await loadRevenue();
@@ -492,7 +530,7 @@ await loadIntelligence();
 updated.innerText =
 "Atualizado: " + new Date().toLocaleString("pt-BR");
 
-refreshBtn.innerText = "🟢 Atualizar agora";
+refreshBtn.innerText = "ðŸŸ¢ Atualizar agora";
 refreshBtn.disabled = false;
 }
 
@@ -563,14 +601,14 @@ const {data:rows,error:rowsError} = await client
 
 if(rowsError){
 walletEconomyError.innerText = rowsError.message;
-walletBody.innerHTML = `<tr><td colspan="8">Erro ao carregar transações Wallet</td></tr>`;
+walletBody.innerHTML = `<tr><td colspan="8">Erro ao carregar transaÃ§Ãµes Wallet</td></tr>`;
 return;
 }
 
 const dataRows = rows || [];
 
 if(dataRows.length === 0){
-walletBody.innerHTML = `<tr><td colspan="8">Nenhuma transação wallet encontrada.</td></tr>`;
+walletBody.innerHTML = `<tr><td colspan="8">Nenhuma transaÃ§Ã£o wallet encontrada.</td></tr>`;
 walletEconomyError.innerText = "";
 return;
 }
@@ -606,6 +644,59 @@ return `
 }).join("");
 
 walletEconomyError.innerText = "";
+}
+
+
+async function loadRevenueConversationEngine(){
+conversationError.innerText = "";
+conversationBody.innerHTML = `<tr><td colspan="7">Carregando Revenue Conversation Engine...</td></tr>`;
+
+const {data:metrics,error:metricsError} = await client
+.from("dashboard_revenue_conversation_metrics_v1")
+.select("*")
+.single();
+
+if(metricsError){
+conversationError.innerText = metricsError.message;
+conversationBody.innerHTML = `<tr><td colspan="7">Erro ao carregar métricas conversacionais</td></tr>`;
+return;
+}
+
+rce_conversations.innerText = metrics.conversations || 0;
+rce_waiting.innerText = metrics.waiting || 0;
+rce_confused.innerText = metrics.confused || 0;
+rce_guiding.innerText = metrics.guiding || 0;
+
+const {data:rows,error:rowsError} = await client
+.from("dashboard_revenue_conversation_details_v1")
+.select("*")
+.order("followup_id", { ascending:true });
+
+if(rowsError){
+conversationError.innerText = rowsError.message;
+conversationBody.innerHTML = `<tr><td colspan="7">Erro ao carregar conversas</td></tr>`;
+return;
+}
+
+conversationBody.innerHTML = "";
+
+if(!rows || rows.length === 0){
+conversationBody.innerHTML = `<tr><td colspan="7">Nenhuma conversa monitorada</td></tr>`;
+return;
+}
+
+for(const row of rows){
+conversationBody.innerHTML += `
+<tr>
+<td>${row.github_username || "-"}</td>
+<td>${row.repository_full_name || "-"}</td>
+<td>${row.current_state || "-"}</td>
+<td>${row.last_intent || "-"}</td>
+<td>${row.next_best_action || "-"}</td>
+<td>${row.last_reply_at ? new Date(row.last_reply_at).toLocaleString("pt-BR") : "-"}</td>
+<td>${row.last_response_sent_at ? new Date(row.last_response_sent_at).toLocaleString("pt-BR") : "-"}</td>
+</tr>`;
+}
 }
 
 async function loadMain(){
@@ -698,7 +789,7 @@ chartError.innerText = "";
 
 async function loadIntelligence(){
 intelBody.innerHTML =
-`<tr><td colspan="6">Carregando inteligência...</td></tr>`;
+`<tr><td colspan="6">Carregando inteligÃªncia...</td></tr>`;
 
 const {data,error} = await client.rpc("cfo_agent_intelligence");
 
@@ -748,3 +839,4 @@ load();
 
 </body>
 </html>
+
