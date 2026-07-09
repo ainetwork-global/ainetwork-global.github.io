@@ -489,21 +489,25 @@ let chart = null;
 async function login(){
 loginStatus.innerText = "Entrando...";
 
-const {error} = await client.auth.signInWithPassword({
-email: email.value.trim(),
-password: password.value
-});
+try {
+  const {error} = await client.auth.signInWithPassword({
+    email: email.value.trim(),
+    password: password.value
+  });
 
-if(error){
-loginStatus.innerText = error.message;
-return;
+  if(error){
+    loginStatus.innerText = error.message;
+    return;
+  }
+
+  loginStatus.innerText = "";
+  loginBox.style.display = "none";
+  dash.style.display = "block";
+
+  await load();
+} catch (err) {
+  loginStatus.innerText = String(err?.message || err);
 }
-
-loginStatus.innerText = "";
-loginBox.style.display = "none";
-dash.style.display = "block";
-
-await load();
 }
 
 async function logout(){
@@ -841,6 +845,7 @@ load();
 
 </body>
 </html>
+
 
 
 
