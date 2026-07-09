@@ -516,29 +516,36 @@ dash.style.display = "none";
 loginBox.style.display = "block";
 }
 
+async function runBlock(name, fn, timeoutMs = 12000){
+  try {
+    await Promise.race([
+      fn(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error(name + " timeout")), timeoutMs)
+      )
+    ]);
+  } catch (err) {
+    console.error("Erro no bloco " + name + ":", err);
+  }
+}
+
 async function load(){
 refreshBtn.innerText = "Atualizando...";
 refreshBtn.disabled = true;
 updated.innerText = "Atualizando...";
 
-try {
-  await loadGrowth();
-  await loadEconomicFunnel();
-  await loadRevenueConversationEngine();
-  await loadWalletEconomy();
-  await loadMain();
-  await loadHealth();
-  await loadRevenue();
-  await loadIntelligence();
+await runBlock("Growth", loadGrowth);
+await runBlock("Economic Funnel", loadEconomicFunnel);
+await runBlock("Revenue Conversation Engine", loadRevenueConversationEngine);
+await runBlock("Wallet Economy", loadWalletEconomy);
+await runBlock("Main CFO", loadMain);
+await runBlock("Health", loadHealth);
+await runBlock("Revenue", loadRevenue);
+await runBlock("Intelligence", loadIntelligence);
 
-  updated.innerText = "Atualizado: " + new Date().toLocaleString("pt-BR");
-} catch (err) {
-  console.error("Erro ao atualizar dashboard:", err);
-  updated.innerText = "Atualizado parcialmente: " + new Date().toLocaleString("pt-BR");
-} finally {
-  refreshBtn.innerText = "Atualizar agora";
-  refreshBtn.disabled = false;
-}
+updated.innerText = "Atualizado: " + new Date().toLocaleString("pt-BR");
+refreshBtn.innerText = "Atualizar agora";
+refreshBtn.disabled = false;
 }
 async function loadGrowth(){
 const {data,error} = await client.rpc("cfo_growth_radar").single();
@@ -845,6 +852,7 @@ load();
 
 </body>
 </html>
+
 
 
 
