@@ -285,7 +285,7 @@ button{width:100%}
 </div>
 
 <div class="actions">
-<button id="refreshBtn" class="refresh-btn" onclick="load()">ðŸŸ¢ Atualizar agora</button>
+Atualizar agora</button>
 <button class="logout" onclick="logout()">Sair</button>
 </div>
 </div>
@@ -513,10 +513,10 @@ loginBox.style.display = "block";
 }
 
 async function load(){
-refreshBtn.innerText = "ðŸŸ¢ Atualizando...";
+Atualizando...";
 refreshBtn.disabled = true;
 
-updated.innerText = "Atualizando...";
+Atualizando...";
 
 await loadGrowth();
 await loadEconomicFunnel();
@@ -530,7 +530,7 @@ await loadIntelligence();
 updated.innerText =
 "Atualizado: " + new Date().toLocaleString("pt-BR");
 
-refreshBtn.innerText = "ðŸŸ¢ Atualizar agora";
+Atualizar agora";
 refreshBtn.disabled = false;
 }
 
@@ -703,7 +703,7 @@ async function loadMain(){
 const {data,error} = await client.rpc("cfo_dashboard_portal_cached").single();
 
 if(error){
-alert("Erro CFO principal: " + error.message);
+console.error("Erro CFO principal:", error.message);
 return;
 }
 
@@ -839,6 +839,7 @@ load();
 
 </body>
 </html>
+
 
 
 
