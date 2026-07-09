@@ -513,27 +513,29 @@ loginBox.style.display = "block";
 }
 
 async function load(){
-Atualizando...";
+refreshBtn.innerText = "Atualizando...";
 refreshBtn.disabled = true;
+updated.innerText = "Atualizando...";
 
-Atualizando...";
+try {
+  await loadGrowth();
+  await loadEconomicFunnel();
+  await loadRevenueConversationEngine();
+  await loadWalletEconomy();
+  await loadMain();
+  await loadHealth();
+  await loadRevenue();
+  await loadIntelligence();
 
-await loadGrowth();
-await loadEconomicFunnel();
-await loadWalletEconomy();
-await loadRevenueConversationEngine();
-await loadMain();
-await loadHealth();
-await loadRevenue();
-await loadIntelligence();
-
-updated.innerText =
-"Atualizado: " + new Date().toLocaleString("pt-BR");
-
-Atualizar agora";
-refreshBtn.disabled = false;
+  updated.innerText = "Atualizado: " + new Date().toLocaleString("pt-BR");
+} catch (err) {
+  console.error("Erro ao atualizar dashboard:", err);
+  updated.innerText = "Atualizado parcialmente: " + new Date().toLocaleString("pt-BR");
+} finally {
+  refreshBtn.innerText = "Atualizar agora";
+  refreshBtn.disabled = false;
 }
-
+}
 async function loadGrowth(){
 const {data,error} = await client.rpc("cfo_growth_radar").single();
 
@@ -839,6 +841,7 @@ load();
 
 </body>
 </html>
+
 
 
 
