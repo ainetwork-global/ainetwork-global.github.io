@@ -486,6 +486,15 @@ const client = supabase.createClient(
 
 let chart = null;
 
+const refreshBtn = document.getElementById("refreshBtn");
+const updated = document.getElementById("updated");
+const dash = document.getElementById("dash");
+const loginBox = document.getElementById("loginBox");
+const loginStatus = document.getElementById("loginStatus");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+
+
 async function login(){
 loginStatus.innerText = "Entrando...";
 
@@ -852,6 +861,7 @@ load();
 
 </body>
 </html>
+
 
 
 
