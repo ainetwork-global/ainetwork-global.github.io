@@ -525,6 +525,16 @@ dash.style.display = "none";
 loginBox.style.display = "block";
 }
 
+function setTextSafe(id, value){
+  const el = document.getElementById(id);
+  if(el) el.innerText = value;
+}
+
+function setDisabledSafe(id, value){
+  const el = document.getElementById(id);
+  if(el) el.disabled = value;
+}
+
 async function runBlock(name, fn, timeoutMs = 12000){
   try {
     await Promise.race([
@@ -539,9 +549,9 @@ async function runBlock(name, fn, timeoutMs = 12000){
 }
 
 async function load(){
-refreshBtn.innerText = "Atualizando...";
-refreshBtn.disabled = true;
-updated.innerText = "Atualizando...";
+setTextSafe("refreshBtn", "Atualizando...");
+setDisabledSafe("refreshBtn", true);
+setTextSafe("updated", "Atualizando...");
 
 await runBlock("Growth", loadGrowth);
 await runBlock("Economic Funnel", loadEconomicFunnel);
@@ -552,9 +562,9 @@ await runBlock("Health", loadHealth);
 await runBlock("Revenue", loadRevenue);
 await runBlock("Intelligence", loadIntelligence);
 
-updated.innerText = "Atualizado: " + new Date().toLocaleString("pt-BR");
-refreshBtn.innerText = "Atualizar agora";
-refreshBtn.disabled = false;
+setTextSafe("updated", "Atualizado: " + new Date().toLocaleString("pt-BR"));
+setTextSafe("refreshBtn", "Atualizar agora");
+setDisabledSafe("refreshBtn", false);
 }
 async function loadGrowth(){
 const {data,error} = await client.rpc("cfo_growth_radar").single();
@@ -861,6 +871,7 @@ load();
 
 </body>
 </html>
+
 
 
 
