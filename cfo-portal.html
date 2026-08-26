@@ -332,6 +332,43 @@ Funil econômico do Brain para agentes com sinais reais de consumo, escassez e i
 
 
 
+
+<!-- Global Revenue Brain -->
+<div class="panel">
+<div class="top">
+<div>
+<h2>Global Revenue Brain — Operação em Tempo Real</h2>
+<p class="small">Descoberta, validação, desenvolvimento, candidatura, submissão e recebimento.</p>
+</div>
+<div class="brain-live">Sincronizado com GitHub</div>
+</div>
+<div class="grid">
+<div class="card economic-card economic-neutral"><div class="label">Candidatos Verificados</div><div class="value" id="brain_candidates">0</div></div>
+<div class="card economic-card economic-success"><div class="label">Prontos para Desenvolver</div><div class="value" id="brain_ready">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">Revisão Humana</div><div class="value" id="brain_review">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">Bloqueados</div><div class="value" id="brain_blocked">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Operações Acompanhadas</div><div class="value" id="brain_operations">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">Aprovações Pendentes</div><div class="value" id="brain_approvals">0</div></div>
+</div>
+<h3 style="margin-top:22px">Cinco pilares de execução</h3>
+<div class="grid">
+<div class="card brain-pillar"><div><div class="pillar-name">1. Desenvolver solução</div><div class="pillar-state ok">Mecanismo pronto</div></div><div class="pillar-detail" id="pillar_development">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">2. Claim ou candidatura</div><div class="pillar-state warn">Aprovação individual</div></div><div class="pillar-detail" id="pillar_claim">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">3. Submeter trabalho</div><div class="pillar-state warn">Controlado</div></div><div class="pillar-detail" id="pillar_submission">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">4. Acompanhar aprovação</div><div class="pillar-state ok">Monitoramento pronto</div></div><div class="pillar-detail" id="pillar_review">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">5. Receber pagamento</div><div class="pillar-state warn">Perfis configurados</div></div><div class="pillar-detail" id="pillar_payment">Aguardando dados...</div></div>
+</div>
+<h3 style="margin-top:22px">Operações atuais</h3>
+<div class="wallet-table-wrap">
+<table>
+<thead><tr><th>Tarefa</th><th>Recompensa</th><th>Verdade</th><th>Desenvolvimento</th><th>Claim</th><th>Submissão</th><th>Pagamento</th></tr></thead>
+<tbody id="brainOperationsBody"><tr><td colspan="7">Carregando Brain...</td></tr></tbody>
+</table>
+</div>
+<div id="brainError" class="error"></div>
+</div>
+<br>
+
 <!-- Revenue Conversation Engine -->
 <div class="panel">
 <h2>Revenue Conversation Engine</h2>
