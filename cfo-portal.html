@@ -92,7 +92,17 @@ opacity:.95;
 .economic-success::before{background:var(--green)}
 
 .economic-warning .label,
-.economic-warning .value{color:#fbbf24}
+.economic-warning 
+.brain-pillar{min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.brain-pillar .pillar-name{font-size:14px;color:var(--muted);font-weight:800}
+.brain-pillar .pillar-state{font-size:18px;font-weight:900;margin:10px 0}
+.brain-pillar .pillar-detail{font-size:12px;color:var(--muted);line-height:1.45}
+.brain-live{display:flex;align-items:center;gap:8px;color:var(--green2);font-size:13px;font-weight:800}
+.brain-live::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 14px var(--green)}
+.brain-link{color:#7dd3fc;text-decoration:none;font-weight:800}
+.brain-link:hover{text-decoration:underline}
+
+.value{color:#fbbf24}
 
 .economic-danger .label,
 .economic-danger .value{color:#f87171}
@@ -332,6 +342,43 @@ Funil econômico do Brain para agentes com sinais reais de consumo, escassez e i
 
 
 
+
+<!-- Global Revenue Brain -->
+<div class="panel">
+<div class="top">
+<div>
+<h2>Global Revenue Brain — Operação em Tempo Real</h2>
+<p class="small">Descoberta, validação, desenvolvimento, candidatura, submissão e recebimento.</p>
+</div>
+<div class="brain-live">Sincronizado com GitHub</div>
+</div>
+<div class="grid">
+<div class="card economic-card economic-neutral"><div class="label">Candidatos Verificados</div><div class="value" id="brain_candidates">0</div></div>
+<div class="card economic-card economic-success"><div class="label">Prontos para Desenvolver</div><div class="value" id="brain_ready">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">Revisão Humana</div><div class="value" id="brain_review">0</div></div>
+<div class="card economic-card economic-danger"><div class="label">Bloqueados</div><div class="value" id="brain_blocked">0</div></div>
+<div class="card economic-card economic-neutral"><div class="label">Operações Acompanhadas</div><div class="value" id="brain_operations">0</div></div>
+<div class="card economic-card economic-warning"><div class="label">Aprovações Pendentes</div><div class="value" id="brain_approvals">0</div></div>
+</div>
+<h3 style="margin-top:22px">Cinco pilares de execução</h3>
+<div class="grid">
+<div class="card brain-pillar"><div><div class="pillar-name">1. Desenvolver solução</div><div class="pillar-state ok">Mecanismo pronto</div></div><div class="pillar-detail" id="pillar_development">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">2. Claim ou candidatura</div><div class="pillar-state warn">Aprovação individual</div></div><div class="pillar-detail" id="pillar_claim">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">3. Submeter trabalho</div><div class="pillar-state warn">Controlado</div></div><div class="pillar-detail" id="pillar_submission">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">4. Acompanhar aprovação</div><div class="pillar-state ok">Monitoramento pronto</div></div><div class="pillar-detail" id="pillar_review">Aguardando dados...</div></div>
+<div class="card brain-pillar"><div><div class="pillar-name">5. Receber pagamento</div><div class="pillar-state warn">Perfis configurados</div></div><div class="pillar-detail" id="pillar_payment">Aguardando dados...</div></div>
+</div>
+<h3 style="margin-top:22px">Operações atuais</h3>
+<div class="wallet-table-wrap">
+<table>
+<thead><tr><th>Tarefa</th><th>Recompensa</th><th>Verdade</th><th>Desenvolvimento</th><th>Claim</th><th>Submissão</th><th>Pagamento</th></tr></thead>
+<tbody id="brainOperationsBody"><tr><td colspan="7">Carregando Brain...</td></tr></tbody>
+</table>
+</div>
+<div id="brainError" class="error"></div>
+</div>
+<br>
+
 <!-- Revenue Conversation Engine -->
 <div class="panel">
 <h2>Revenue Conversation Engine</h2>
@@ -555,6 +602,7 @@ setTextSafe("updated", "Atualizando...");
 
 await runBlock("Growth", loadGrowth);
 await runBlock("Economic Funnel", loadEconomicFunnel);
+await runBlock("Global Revenue Brain", loadGlobalRevenueBrain);
 await runBlock("Revenue Conversation Engine", loadRevenueConversationEngine);
 await runBlock("Wallet Economy", loadWalletEconomy);
 await runBlock("Main CFO", loadMain);
@@ -566,6 +614,97 @@ setTextSafe("updated", "Atualizado: " + new Date().toLocaleString("pt-BR"));
 setTextSafe("refreshBtn", "Atualizar agora");
 setDisabledSafe("refreshBtn", false);
 }
+const BRAIN_RAW_BASE = "https://raw.githubusercontent.com/ainetwork-global/AI-Network-Lab-Brain/main/01_GLOBAL_REVENUE_BRAIN/04_OPPORTUNITIES/";
+
+function parseCsv(text){
+  const rows=[]; let row=[]; let field=""; let quoted=false;
+  const clean=String(text || "").replace(/^\uFEFF/,"");
+  for(let i=0;i<clean.length;i++){
+    const ch=clean[i];
+    if(ch === '"'){
+      if(quoted && clean[i+1] === '"'){field+='"';i++;}
+      else quoted=!quoted;
+    } else if(ch === "," && !quoted){row.push(field);field="";}
+    else if((ch === "\n" || ch === "\r") && !quoted){
+      if(ch === "\r" && clean[i+1] === "\n") i++;
+      row.push(field); field="";
+      if(row.some(x=>x !== "")) rows.push(row);
+      row=[];
+    } else field+=ch;
+  }
+  if(field || row.length){row.push(field);rows.push(row);}
+  if(rows.length < 2) return [];
+  const headers=rows[0].map(x=>x.trim());
+  return rows.slice(1).map(cols=>Object.fromEntries(headers.map((h,i)=>[h,(cols[i] || "").trim()])));
+}
+
+function esc(value){
+  return String(value ?? "").replace(/[&<>"']/g, ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+function githubUrl(value){
+  try{
+    const url=new URL(value);
+    return url.protocol === "https:" && url.hostname === "github.com" ? url.href : "#";
+  }catch{return "#";}
+}
+
+async function brainCsv(file){
+  const response=await fetch(BRAIN_RAW_BASE + file + "?v=" + Date.now(), {cache:"no-store"});
+  if(!response.ok) throw new Error(file + " HTTP " + response.status);
+  return parseCsv(await response.text());
+}
+
+async function loadGlobalRevenueBrain(){
+  brainError.innerText="";
+  const [truth,operations,approvals]=await Promise.all([
+    brainCsv("LIVE_TRUTH_EXECUTION_QUEUE.csv"),
+    brainCsv("REVENUE_OPERATIONS.csv"),
+    brainCsv("HUMAN_APPROVAL_QUEUE.csv")
+  ]);
+
+  const ready=truth.filter(x=>x.truth_status === "READY_FOR_TECHNICAL_REVIEW").length;
+  const blocked=truth.filter(x=>String(x.truth_status).startsWith("BLOCKED_")).length;
+  const review=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(x.truth_status) && !String(x.truth_status).startsWith("BLOCKED_")).length;
+  const pendingApprovals=approvals.filter(x=>!["approved","rejected","cancelled","completed"].includes(String(x.status).toLowerCase())).length;
+  const developed=operations.filter(x=>/completed|tested|solution_ready/.test(String(x.development_status).toLowerCase())).length;
+  const claimed=operations.filter(x=>!["","not_requested","not_prepared"].includes(String(x.claim_status).toLowerCase())).length;
+  const submitted=operations.filter(x=>!["","not_prepared","not_submitted"].includes(String(x.submission_status).toLowerCase())).length;
+  const underReview=operations.filter(x=>!["","not_submitted","not_expected"].includes(String(x.review_status).toLowerCase())).length;
+  const paid=operations.filter(x=>/paid|received|settled|completed/.test(String(x.payment_status).toLowerCase())).length;
+
+  setTextSafe("brain_candidates", truth.length);
+  setTextSafe("brain_ready", ready);
+  setTextSafe("brain_review", review);
+  setTextSafe("brain_blocked", blocked);
+  setTextSafe("brain_operations", operations.length);
+  setTextSafe("brain_approvals", pendingApprovals);
+  setTextSafe("pillar_development", developed + " tarefa(s) concluída(s); " + ready + " pronta(s) para execução automática.");
+  setTextSafe("pillar_claim", claimed + " claim(s) realizado(s); " + pendingApprovals + " aprovação(ões) pendente(s).");
+  setTextSafe("pillar_submission", submitted + " trabalho(s) submetido(s). Ação externa exige autorização.");
+  setTextSafe("pillar_review", underReview + " trabalho(s) em aprovação ou revisão.");
+  setTextSafe("pillar_payment", paid + " pagamento(s) confirmado(s). Movimentação financeira permanece manual.");
+
+  if(!operations.length){
+    brainOperationsBody.innerHTML='<tr><td colspan="7">Nenhuma operação acompanhada.</td></tr>';
+    return;
+  }
+
+  brainOperationsBody.innerHTML=operations.slice(0,10).map(x=>{
+    const url=githubUrl(x.source_url);
+    const reward=(x.reward_currency || "USD") + " " + Number(x.reward_amount || 0).toFixed(2);
+    return '<tr>'+
+      '<td><a class="brain-link" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(x.title || "-")+'</a></td>'+
+      '<td>'+esc(reward)+'</td>'+
+      '<td><span class="status-pill status-pending">'+esc(x.truth_status || "-")+'</span></td>'+
+      '<td>'+esc(x.development_status || "-")+'</td>'+
+      '<td>'+esc(x.claim_status || "-")+'</td>'+
+      '<td>'+esc(x.submission_status || "-")+'</td>'+
+      '<td>'+esc(x.payment_status || "-")+'</td>'+
+    '</tr>';
+  }).join("");
+}
+
 async function loadGrowth(){
 const {data,error} = await client.rpc("cfo_growth_radar").single();
 
