@@ -13,6 +13,7 @@ h1,h2{margin:0}.subtitle,.small{color:var(--muted);line-height:1.5}.subtitle{mar
 .live:before{content:"";width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
 button{border:0;border-radius:13px;padding:12px 17px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--green),#86efac);color:#052e16}
 button:disabled{opacity:.65;cursor:wait}.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.22)}
+.select-button{display:inline-block;padding:9px 12px;border-radius:10px;background:linear-gradient(135deg,#f59e0b,#fde68a);color:#422006;font-size:12px;font-weight:900;white-space:nowrap}.select-button:hover{text-decoration:none;filter:brightness(1.06)}
 .panel{padding:20px;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:17px}
 .card{padding:17px;position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--blue)}
 .card.green:before{background:var(--green)}.card.yellow:before{background:var(--yellow)}.card.red:before{background:var(--red)}
@@ -67,11 +68,17 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 <div class="grid">
 <div class="card yellow"><div class="label">Na fila para sua análise</div><div id="humanReviewTotal" class="value">—</div></div>
 <div class="card"><div class="label">Maior valor anunciado</div><div id="humanReviewMax" class="value">—</div></div>
+<div class="card green"><div class="label">Pedidos enviados ao Brain</div><div id="selectionTotal" class="value">—</div></div>
 <div class="card red"><div class="label">Ação automática externa</div><div class="state bad">Bloqueada</div><div class="small">Nenhum claim, teste, inscrição ou candidatura sem sua decisão.</div></div>
 </div>
 <div class="table-wrap"><table>
-<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th></tr></thead>
-<tbody id="humanReviewRows"><tr><td colspan="7">Carregando...</td></tr></tbody>
+<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th><th>Decisão</th></tr></thead>
+<tbody id="humanReviewRows"><tr><td colspan="8">Carregando...</td></tr></tbody>
+</table></div>
+<h3>Pedidos já enviados</h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Pedido</th><th>Oportunidade</th><th>Status</th><th>Caminho preparado</th><th>Selecionado em</th></tr></thead>
+<tbody id="selectionRows"><tr><td colspan="5">Carregando...</td></tr></tbody>
 </table></div>
 </section>
 
@@ -104,7 +111,7 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 </main>
 <script>
 const BASE="https://raw.githubusercontent.com/ainetwork-global/AI-Network-Lab-Brain/main/01_GLOBAL_REVENUE_BRAIN/04_OPPORTUNITIES/";
-const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv",platforms:"participant_platform_status.csv"};
+const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv",platforms:"participant_platform_status.csv",selections:"DASHBOARD_HUMAN_SELECTION_QUEUE.csv"};
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function parseCsv(text){
@@ -122,12 +129,18 @@ function parseCsv(text){
 async function csv(name){const r=await fetch(BASE+name+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(name+" HTTP "+r.status);return parseCsv(await r.text())}
 function statusClass(v){const s=String(v||"").toLowerCase();if(/paid|received|settled|completed|ready|approved|success/.test(s))return"ok";if(/blocked|failed|rejected|cancelled|invalid/.test(s))return"bad";return"warn"}
 function sourceUrl(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:"#"}catch{return"#"}}
+function selectionRequestUrl(x){
+ const rank=x.truth_rank||x.rank||"-";const title=String(x.title||"Oportunidade").slice(0,140);
+ const issueTitle=`[DASHBOARD REVIEW] #${rank} - ${title}`;
+ const body=[`Opportunity URL: ${x.url||""}`,`Truth status: ${x.truth_status||""}`,`Advertised reward: ${x.reward_currency||"USD"} ${x.reward_amount||"0"}`,`Source: ${x.source||""}`,`Requested action: ${x.recommended_action||"Prepare individual analysis and execution path"}`,"","I selected this candidate for analysis. Do not perform claims, applications, tests, submissions, signatures or payments without a separate approval."].join("\n");
+ return `https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(body)}`;
+}
 function set(id,v){$(id).textContent=v}
 async function load(){
  const btn=$("refresh");btn.disabled=true;btn.textContent="Atualizando...";
  $("error").style.display="none";
  try{
-  const [truth,ops,aps,platforms]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals),csv(FILES.platforms)]);
+  const [truth,ops,aps,platforms,selections]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals),csv(FILES.platforms),csv(FILES.selections)]);
   const ready=truth.filter(x=>/READY_FOR_TECHNICAL_REVIEW|READY_FOR_DEVELOPMENT/.test(x.truth_status)).length;
   const blocked=truth.filter(x=>String(x.truth_status).startsWith("BLOCKED_")).length;
   const review=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(x.truth_status)&&!String(x.truth_status).startsWith("BLOCKED_")).length;
@@ -148,11 +161,15 @@ async function load(){
   const maxReview=humanReview.reduce((max,x)=>Math.max(max,Number(x.reward_amount||0)),0);
   set("humanReviewTotal",humanReview.length);
   set("humanReviewMax",maxReview?"USD "+maxReview.toLocaleString("pt-BR",{maximumFractionDigits:0}):"—");
+  set("selectionTotal",selections.length);
   $("humanReviewRows").innerHTML=humanReview.length?humanReview.slice(0,25).map(x=>{
    const url=sourceUrl(x.url);const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
    const competition=x.open_competing_prs?x.open_competing_prs+" PR(s) aberto(s)":(x.comments||"0")+" comentário(s)";
-   return `<tr><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}</td><td>${esc(x.source||"-")}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td></tr>`
-  }).join(""):'<tr><td colspan="7">Nenhum candidato aguardando análise humana.</td></tr>';
+   const alreadySelected=selections.some(s=>s.url===x.url);
+   const decision=alreadySelected?'<span class="pill ok">Pedido enviado</span>':`<a class="select-button" href="${esc(selectionRequestUrl(x))}" target="_blank" rel="noopener noreferrer">Selecionar para análise</a>`;
+   return `<tr><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}</td><td>${esc(x.source||"-")}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td><td>${decision}</td></tr>`
+  }).join(""):'<tr><td colspan="8">Nenhum candidato aguardando análise humana.</td></tr>';
+  $("selectionRows").innerHTML=selections.length?selections.slice().reverse().map(x=>`<tr><td><a href="https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/${esc(x.issue_number)}" target="_blank" rel="noopener noreferrer">#${esc(x.issue_number)}</a></td><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td><span class="pill warn">${esc(x.status||"-")}</span></td><td>${esc(x.execution_path||"-")}</td><td>${esc(x.selected_at||"-")}</td></tr>`).join(""):'<tr><td colspan="5">Nenhum pedido enviado ainda.</td></tr>';
   $("platformRows").innerHTML=platforms.length?platforms.map(x=>`<tr><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name||"-")}</a></td><td>${esc(x.category||"-")}</td><td>${esc(x.brazil||"-")}</td><td>${esc(x.feed||"-")}</td><td><span class="pill ${statusClass(x.status)}">${esc(x.status||"-")}</span></td><td>${esc(x.monitor_mode||"-")}</td></tr>`).join(""):'<tr><td colspan="6">Nenhuma plataforma registrada.</td></tr>';
   $("operationRows").innerHTML=ops.length?ops.slice(0,25).map(x=>{
    const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toFixed(2));
