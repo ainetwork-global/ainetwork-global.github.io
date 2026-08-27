@@ -1,3 +1,4 @@
+// Cloudflare Pages authentication boundary for /dashboard/*.
 function unauthorized() {
   return new Response("Autenticação necessária.", {
     status: 401,
