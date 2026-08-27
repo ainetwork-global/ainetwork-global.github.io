@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>Global Revenue Brain | Dashboard</title>
+<style>
+:root{--bg:#07111f;--panel:#0f1c31;--line:#243751;--text:#f8fafc;--muted:#9fb6d3;--blue:#38bdf8;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#081426);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+.wrap{max-width:1440px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+h1,h2{margin:0}.subtitle,.small{color:var(--muted);line-height:1.5}.subtitle{margin:7px 0 0}.live{display:flex;align-items:center;gap:9px;color:#86efac;font-size:13px;font-weight:800}
+.live:before{content:"";width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+button{border:0;border-radius:13px;padding:12px 17px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,var(--green),#86efac);color:#052e16}
+button:disabled{opacity:.65;cursor:wait}.panel,.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.22)}
+.panel{padding:20px;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:17px}
+.card{padding:17px;position:relative;overflow:hidden}.card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--blue)}
+.card.green:before{background:var(--green)}.card.yellow:before{background:var(--yellow)}.card.red:before{background:var(--red)}
+.label{color:var(--muted);font-size:13px;font-weight:700;margin-bottom:9px}.value{font-size:30px;font-weight:900}.state{font-size:18px;font-weight:900;margin:10px 0}
+.ok{color:#86efac}.warn{color:#fbbf24}.bad{color:#f87171}.table-wrap{overflow:auto;margin-top:16px}
+table{width:100%;border-collapse:collapse;min-width:1000px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px}th{color:#cbd5e1}
+.pill{display:inline-block;padding:5px 9px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:800;white-space:nowrap}
+.pill.ok{background:rgba(34,197,94,.12)}.pill.warn{background:rgba(245,158,11,.12)}.pill.bad{background:rgba(239,68,68,.12)}
+a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.error{display:none;color:#fecaca;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:12px;border-radius:12px;margin-top:14px}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 0 22px}
+@media(max-width:700px){.wrap{padding:15px}.value{font-size:26px}.top button{width:100%}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header class="top">
+<div><h1>Global Revenue Brain</h1><p class="subtitle">Painel operacional de descoberta, desenvolvimento, submissão e pagamento.</p></div>
+<div><div class="live">Sincronizado com o GitHub</div><p id="updated" class="small">Carregando...</p></div>
+<button id="refresh" type="button">Atualizar agora</button>
+</header>
+
+<section class="panel">
+<h2>Visão geral</h2>
+<div class="grid">
+<div class="card"><div class="label">Candidatos verificados</div><div id="candidates" class="value">—</div></div>
+<div class="card green"><div class="label">Prontos para desenvolver</div><div id="ready" class="value">—</div></div>
+<div class="card yellow"><div class="label">Revisão necessária</div><div id="review" class="value">—</div></div>
+<div class="card red"><div class="label">Bloqueados</div><div id="blocked" class="value">—</div></div>
+<div class="card"><div class="label">Operações acompanhadas</div><div id="operations" class="value">—</div></div>
+<div class="card yellow"><div class="label">Aprovações pendentes</div><div id="approvals" class="value">—</div></div>
+<div class="card green"><div class="label">Pagamentos confirmados</div><div id="payments" class="value">—</div></div>
+</div>
+<div id="error" class="error"></div>
+</section>
+
+<section class="panel">
+<h2>Cinco pilares</h2>
+<div class="grid">
+<div class="card"><div class="label">1. Desenvolver solução</div><div class="state ok">Executor pronto</div><div id="developmentDetail" class="small">Carregando...</div></div>
+<div class="card yellow"><div class="label">2. Claim ou candidatura</div><div class="state warn">Aprovação individual</div><div id="claimDetail" class="small">Carregando...</div></div>
+<div class="card yellow"><div class="label">3. Submeter trabalho</div><div class="state warn">Controlado</div><div id="submissionDetail" class="small">Carregando...</div></div>
+<div class="card green"><div class="label">4. Acompanhar aprovação</div><div class="state ok">Monitoramento pronto</div><div id="reviewDetail" class="small">Carregando...</div></div>
+<div class="card yellow"><div class="label">5. Receber pagamento</div><div class="state warn">Movimentação manual</div><div id="paymentDetail" class="small">Carregando...</div></div>
+</div>
+</section>
+
+<section class="panel">
+<h2>Operações atuais</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Tarefa</th><th>Recompensa</th><th>Verdade</th><th>Desenvolvimento</th><th>Claim</th><th>Submissão</th><th>Revisão</th><th>Pagamento</th></tr></thead>
+<tbody id="operationRows"><tr><td colspan="8">Carregando...</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Aprovações humanas</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Pedido</th><th>Ação</th><th>Status</th><th>Motivo</th><th>Criado</th></tr></thead>
+<tbody id="approvalRows"><tr><td colspan="5">Carregando...</td></tr></tbody>
+</table></div>
+</section>
+
+<div class="footer">AI Network Lab — Interface protegida externamente pelo Cloudflare Access</div>
+</main>
+<script>
+const BASE="https://raw.githubusercontent.com/ainetwork-global/AI-Network-Lab-Brain/main/01_GLOBAL_REVENUE_BRAIN/04_OPPORTUNITIES/";
+const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv"};
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function parseCsv(text){
+ const rows=[];let row=[],field="",quoted=false;const clean=String(text||"").replace(/^\uFEFF/,"");
+ for(let i=0;i<clean.length;i++){const c=clean[i];
+  if(c==='"'){if(quoted&&clean[i+1]==='"'){field+='"';i++}else quoted=!quoted}
+  else if(c===","&&!quoted){row.push(field);field=""}
+  else if((c==="\n"||c==="\r")&&!quoted){if(c==="\r"&&clean[i+1]==="\n")i++;row.push(field);field="";if(row.some(x=>x!==""))rows.push(row);row=[]}
+  else field+=c
+ }
+ if(field||row.length){row.push(field);rows.push(row)}
+ if(rows.length<2)return[];const headers=rows[0].map(x=>x.trim());
+ return rows.slice(1).map(cols=>Object.fromEntries(headers.map((h,i)=>[h,(cols[i]||"").trim()])))
+}
+async function csv(name){const r=await fetch(BASE+name+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(name+" HTTP "+r.status);return parseCsv(await r.text())}
+function statusClass(v){const s=String(v||"").toLowerCase();if(/paid|received|settled|completed|ready|approved|success/.test(s))return"ok";if(/blocked|failed|rejected|cancelled|invalid/.test(s))return"bad";return"warn"}
+function sourceUrl(v){try{const u=new URL(v);return u.protocol==="https:"&&["github.com","algora.io"].includes(u.hostname)?u.href:"#"}catch{return"#"}}
+function set(id,v){$(id).textContent=v}
+async function load(){
+ const btn=$("refresh");btn.disabled=true;btn.textContent="Atualizando...";
+ $("error").style.display="none";
+ try{
+  const [truth,ops,aps]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals)]);
+  const ready=truth.filter(x=>/READY_FOR_TECHNICAL_REVIEW|READY_FOR_DEVELOPMENT/.test(x.truth_status)).length;
+  const blocked=truth.filter(x=>String(x.truth_status).startsWith("BLOCKED_")).length;
+  const review=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(x.truth_status)&&!String(x.truth_status).startsWith("BLOCKED_")).length;
+  const pending=aps.filter(x=>!["approved","rejected","cancelled","completed"].includes(String(x.status).toLowerCase())).length;
+  const developed=ops.filter(x=>/completed|tested|solution_ready/.test(String(x.development_status).toLowerCase())).length;
+  const claimed=ops.filter(x=>!["","not_requested","not_prepared"].includes(String(x.claim_status).toLowerCase())).length;
+  const submitted=ops.filter(x=>!["","not_prepared","not_submitted"].includes(String(x.submission_status).toLowerCase())).length;
+  const underReview=ops.filter(x=>!["","not_submitted","not_expected"].includes(String(x.review_status).toLowerCase())).length;
+  const paid=ops.filter(x=>/paid|received|settled|completed/.test(String(x.payment_status).toLowerCase())).length;
+  set("candidates",truth.length);set("ready",ready);set("review",review);set("blocked",blocked);set("operations",ops.length);set("approvals",pending);set("payments",paid);
+  set("developmentDetail",developed+" concluída(s); "+ready+" pronta(s) para execução.");
+  set("claimDetail",claimed+" claim(s); "+pending+" aprovação(ões) pendente(s).");
+  set("submissionDetail",submitted+" trabalho(s) submetido(s).");
+  set("reviewDetail",underReview+" trabalho(s) em revisão ou acompanhamento.");
+  set("paymentDetail",paid+" pagamento(s) confirmado(s); saque e transferência continuam manuais.");
+  $("operationRows").innerHTML=ops.length?ops.slice(0,25).map(x=>{
+   const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toFixed(2));
+   const url=sourceUrl(x.source_url);
+   return `<tr><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||x.candidate_key||"-")}</a></td><td>${reward}</td><td><span class="pill ${statusClass(x.truth_status)}">${esc(x.truth_status||"-")}</span></td><td>${esc(x.development_status||"-")}</td><td>${esc(x.claim_status||"-")}</td><td>${esc(x.submission_status||"-")}</td><td>${esc(x.review_status||"-")}</td><td><span class="pill ${statusClass(x.payment_status)}">${esc(x.payment_status||"-")}</span></td></tr>`
+  }).join(""):'<tr><td colspan="8">Nenhuma operação acompanhada.</td></tr>';
+  $("approvalRows").innerHTML=aps.length?aps.slice(0,25).map(x=>`<tr><td>${esc(x.approval_id||x.id||x.candidate_key||"-")}</td><td>${esc(x.action_type||x.requested_action||x.action||"-")}</td><td><span class="pill ${statusClass(x.status)}">${esc(x.status||"-")}</span></td><td>${esc(x.reason||x.description||"-")}</td><td>${esc(x.created_at||"-")}</td></tr>`).join(""):'<tr><td colspan="5">Nenhuma aprovação registrada.</td></tr>';
+  set("updated","Atualizado: "+new Date().toLocaleString("pt-BR"));
+ }catch(e){$("error").textContent="Não foi possível atualizar o Brain: "+(e.message||e);$("error").style.display="block";set("updated","Falha na atualização")}
+ finally{btn.disabled=false;btn.textContent="Atualizar agora"}
+}
+$("refresh").addEventListener("click",load);load();setInterval(load,60000);
+</script>
+</body>
+</html>
