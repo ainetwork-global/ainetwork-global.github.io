@@ -21,6 +21,8 @@ button:disabled{opacity:.65;cursor:wait}.panel,.card{background:var(--panel);bor
 table{width:100%;border-collapse:collapse;min-width:1000px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px}th{color:#cbd5e1}
 .pill{display:inline-block;padding:5px 9px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:800;white-space:nowrap}
 .pill.ok{background:rgba(34,197,94,.12)}.pill.warn{background:rgba(245,158,11,.12)}.pill.bad{background:rgba(239,68,68,.12)}
+.priority-panel{border-color:rgba(245,158,11,.55);box-shadow:0 10px 32px rgba(245,158,11,.08)}
+.reason{max-width:430px;line-height:1.45;color:#dbeafe}.action{max-width:310px;line-height:1.45}
 a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.error{display:none;color:#fecaca;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:12px;border-radius:12px;margin-top:14px}
 .footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 0 22px}
 @media(max-width:700px){.wrap{padding:15px}.value{font-size:26px}.top button{width:100%}}
@@ -59,6 +61,29 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 </div>
 </section>
 
+<section class="panel priority-panel">
+<h2>Análise humana necessária</h2>
+<p class="small">Candidatos potencialmente promissores que precisam de confirmação, elegibilidade, análise de escopo ou ação pessoal antes de qualquer execução.</p>
+<div class="grid">
+<div class="card yellow"><div class="label">Na fila para sua análise</div><div id="humanReviewTotal" class="value">—</div></div>
+<div class="card"><div class="label">Maior valor anunciado</div><div id="humanReviewMax" class="value">—</div></div>
+<div class="card red"><div class="label">Ação automática externa</div><div class="state bad">Bloqueada</div><div class="small">Nenhum claim, teste, inscrição ou candidatura sem sua decisão.</div></div>
+</div>
+<div class="table-wrap"><table>
+<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th></tr></thead>
+<tbody id="humanReviewRows"><tr><td colspan="7">Carregando...</td></tr></tbody>
+</table></div>
+</section>
+
+<section class="panel">
+<h2>Plataformas com conta</h2>
+<p class="small">Monitoramento de pesquisas, testes de usabilidade e trabalhos de treinamento de IA. As oportunidades personalizadas dependem do login, aplicativo ou convite por e-mail.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Plataforma</th><th>Categoria</th><th>Brasil</th><th>Feed</th><th>Status</th><th>Monitoramento</th></tr></thead>
+<tbody id="platformRows"><tr><td colspan="6">Carregando...</td></tr></tbody>
+</table></div>
+</section>
+
 <section class="panel">
 <h2>Operações atuais</h2>
 <div class="table-wrap"><table>
@@ -79,7 +104,7 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 </main>
 <script>
 const BASE="https://raw.githubusercontent.com/ainetwork-global/AI-Network-Lab-Brain/main/01_GLOBAL_REVENUE_BRAIN/04_OPPORTUNITIES/";
-const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv"};
+const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv",platforms:"participant_platform_status.csv"};
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function parseCsv(text){
@@ -96,13 +121,13 @@ function parseCsv(text){
 }
 async function csv(name){const r=await fetch(BASE+name+"?v="+Date.now(),{cache:"no-store"});if(!r.ok)throw new Error(name+" HTTP "+r.status);return parseCsv(await r.text())}
 function statusClass(v){const s=String(v||"").toLowerCase();if(/paid|received|settled|completed|ready|approved|success/.test(s))return"ok";if(/blocked|failed|rejected|cancelled|invalid/.test(s))return"bad";return"warn"}
-function sourceUrl(v){try{const u=new URL(v);return u.protocol==="https:"&&["github.com","algora.io"].includes(u.hostname)?u.href:"#"}catch{return"#"}}
+function sourceUrl(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:"#"}catch{return"#"}}
 function set(id,v){$(id).textContent=v}
 async function load(){
  const btn=$("refresh");btn.disabled=true;btn.textContent="Atualizando...";
  $("error").style.display="none";
  try{
-  const [truth,ops,aps]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals)]);
+  const [truth,ops,aps,platforms]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals),csv(FILES.platforms)]);
   const ready=truth.filter(x=>/READY_FOR_TECHNICAL_REVIEW|READY_FOR_DEVELOPMENT/.test(x.truth_status)).length;
   const blocked=truth.filter(x=>String(x.truth_status).startsWith("BLOCKED_")).length;
   const review=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(x.truth_status)&&!String(x.truth_status).startsWith("BLOCKED_")).length;
@@ -118,6 +143,17 @@ async function load(){
   set("submissionDetail",submitted+" trabalho(s) submetido(s).");
   set("reviewDetail",underReview+" trabalho(s) em revisão ou acompanhamento.");
   set("paymentDetail",paid+" pagamento(s) confirmado(s); saque e transferência continuam manuais.");
+  const humanReview=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(String(x.truth_status))&&!String(x.truth_status).startsWith("BLOCKED_"));
+  humanReview.sort((a,b)=>Number(a.truth_rank||999)-Number(b.truth_rank||999));
+  const maxReview=humanReview.reduce((max,x)=>Math.max(max,Number(x.reward_amount||0)),0);
+  set("humanReviewTotal",humanReview.length);
+  set("humanReviewMax",maxReview?"USD "+maxReview.toLocaleString("pt-BR",{maximumFractionDigits:0}):"—");
+  $("humanReviewRows").innerHTML=humanReview.length?humanReview.slice(0,25).map(x=>{
+   const url=sourceUrl(x.url);const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
+   const competition=x.open_competing_prs?x.open_competing_prs+" PR(s) aberto(s)":(x.comments||"0")+" comentário(s)";
+   return `<tr><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}</td><td>${esc(x.source||"-")}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td></tr>`
+  }).join(""):'<tr><td colspan="7">Nenhum candidato aguardando análise humana.</td></tr>';
+  $("platformRows").innerHTML=platforms.length?platforms.map(x=>`<tr><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name||"-")}</a></td><td>${esc(x.category||"-")}</td><td>${esc(x.brazil||"-")}</td><td>${esc(x.feed||"-")}</td><td><span class="pill ${statusClass(x.status)}">${esc(x.status||"-")}</span></td><td>${esc(x.monitor_mode||"-")}</td></tr>`).join(""):'<tr><td colspan="6">Nenhuma plataforma registrada.</td></tr>';
   $("operationRows").innerHTML=ops.length?ops.slice(0,25).map(x=>{
    const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toFixed(2));
    const url=sourceUrl(x.source_url);
