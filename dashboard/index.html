@@ -135,19 +135,23 @@ function selectionRequestUrl(x){
  const title=String(x.title||"Oportunidade").slice(0,120);const source=String(x.source||"Fonte externa").slice(0,40);
  const issueTitle=`[BRAIN ANALYSIS] ${source} / ${title}`;
  const kyc=String(x.kyc_required||"").toLowerCase();
- const kycLabel=["1","true","yes"].includes(kyc)?"Yes":(["0","false","no"].includes(kyc)?"No":"Review required");
+ const kycLabel=["1","true","yes"].includes(kyc)?"Required":(["0","false","no"].includes(kyc)?"Not required according to the verified source":"Not disclosed / verification required");
+ const competingPrs=Number(x.open_competing_prs||0);
+ const comments=Number(x.comments||0);
+ const payment=x.payment_method||"Not verified";
  const body=[
   `Opportunity URL: ${x.url||""}`,
   `Opportunity type: ${x.category||"Review required"}`,
   `Truth status: ${x.truth_status||""}`,
   `Maximum advertised reward: ${x.reward_currency||"USD"} ${x.reward_amount||"0"}`,
   `Reward basis: ${x.reward_basis||"reported_amount_unverified"}`,
-  `Payment method: ${x.payment_method||"Review required"}`,
+  `Payment method: ${payment}`,
   `KYC required: ${kycLabel}`,
   `Source: ${source}`,
+  `Competition: ${competingPrs} related open PR(s); ${comments} issue comment(s)`,
   `Requested action: ${x.recommended_action||"Validate official terms and prepare an individual execution path"}`,
   "",
-  "I selected this candidate for internal analysis. Do not perform claims, applications, public-network tests, submissions, signatures, KYC procedures or payments without a separate approval. Security testing must remain local and within the official program scope."
+  "This is an internal Brain analysis request only. It is not an application, claim, acceptance, assignment or external submission. Do not perform development, claims, applications, public-network tests, submissions, signatures, KYC procedures or payments without a separate approval. Security testing must remain local and within the official program scope."
  ].join("\n");
  return `https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(body)}`;
 }
