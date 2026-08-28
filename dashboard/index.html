@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07111f">
 <title>Global Revenue Brain | Dashboard</title>
 <style>
-:root{--bg:#07111f;--panel:#0f1c31;--line:#243751;--text:#f8fafc;--muted:#9fb6d3;--blue:#38bdf8;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444}
+:root{--bg:#07111f;--panel:#0f1c31;--line:#243751;--text:#f8fafc;--muted:#9fb6d3;--blue:#38bdf8;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--purple:#a78bfa}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#081426);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
 .wrap{max-width:1440px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 h1,h2{margin:0}.subtitle,.small{color:var(--muted);line-height:1.5}.subtitle{margin:7px 0 0}.live{display:flex;align-items:center;gap:9px;color:#86efac;font-size:13px;font-weight:800}
@@ -21,7 +21,7 @@ button:disabled{opacity:.65;cursor:wait}.panel,.card{background:var(--panel);bor
 .ok{color:#86efac}.warn{color:#fbbf24}.bad{color:#f87171}.table-wrap{overflow:auto;margin-top:16px}
 table{width:100%;border-collapse:collapse;min-width:1000px}th,td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:13px}th{color:#cbd5e1}
 .pill{display:inline-block;padding:5px 9px;border-radius:999px;border:1px solid var(--line);font-size:11px;font-weight:800;white-space:nowrap}
-.pill.ok{background:rgba(34,197,94,.12)}.pill.warn{background:rgba(245,158,11,.12)}.pill.bad{background:rgba(239,68,68,.12)}
+.pill.ok{background:rgba(34,197,94,.12)}.pill.warn{background:rgba(245,158,11,.12)}.pill.bad{background:rgba(239,68,68,.12)}.pill.info{color:#bae6fd;background:rgba(56,189,248,.12)}.pill.purple{color:#ddd6fe;background:rgba(167,139,250,.14)}tr.selected-row{background:rgba(56,189,248,.055)}.legend{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}.tracking{min-width:180px;line-height:1.45}
 .priority-panel{border-color:rgba(245,158,11,.55);box-shadow:0 10px 32px rgba(245,158,11,.08)}
 .reason{max-width:430px;line-height:1.45;color:#dbeafe}.action{max-width:310px;line-height:1.45}
 a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:underline}.error{display:none;color:#fecaca;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);padding:12px;border-radius:12px;margin-top:14px}
@@ -64,7 +64,8 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 
 <section class="panel priority-panel">
 <h2>Análise humana necessária</h2>
-<p class="small">Candidatos potencialmente promissores que precisam de confirmação, elegibilidade, análise de escopo ou ação pessoal antes de qualquer execução.</p>
+<p class="small">Candidatos potencialmente promissores que precisam de confirmação, elegibilidade, análise de escopo ou ação pessoal antes de qualquer execução. “Selecionada internamente” significa apenas que o Brain começou a análise; não significa candidatura enviada, aceite externo nem pagamento garantido.</p>
+<div class="legend"><span class="pill info">Selecionada internamente</span><span class="pill warn">Auditoria local</span><span class="pill purple">Relatório enviado</span><span class="pill ok">Aceita / pagamento aprovado</span></div>
 <div class="grid">
 <div class="card yellow"><div class="label">Na fila para sua análise</div><div id="humanReviewTotal" class="value">—</div></div>
 <div class="card"><div class="label">Maior recompensa máxima</div><div id="humanReviewMax" class="value">—</div></div>
@@ -72,13 +73,14 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 <div class="card red"><div class="label">Ação automática externa</div><div class="state bad">Bloqueada</div><div class="small">Nenhum claim, teste, inscrição ou candidatura sem sua decisão.</div></div>
 </div>
 <div class="table-wrap"><table>
-<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa máxima</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th><th>Decisão</th></tr></thead>
-<tbody id="humanReviewRows"><tr><td colspan="8">Carregando...</td></tr></tbody>
+<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa máxima</th><th>Fonte</th><th>Etapa real</th><th>KYC</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th><th>Acompanhamento</th><th>Decisão</th></tr></thead>
+<tbody id="humanReviewRows"><tr><td colspan="11">Carregando...</td></tr></tbody>
 </table></div>
-<h3>Pedidos já enviados</h3>
+<h3>Seleções internas registradas</h3>
+<p class="small">Estes registros organizam o trabalho do Brain. Eles não são candidaturas ou relatórios enviados à plataforma externa.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Pedido</th><th>Oportunidade</th><th>Status</th><th>Caminho preparado</th><th>Selecionado em</th></tr></thead>
-<tbody id="selectionRows"><tr><td colspan="5">Carregando...</td></tr></tbody>
+<thead><tr><th>Registro</th><th>Oportunidade</th><th>Etapa real</th><th>Significado</th><th>Caminho preparado</th><th>Selecionado em</th></tr></thead>
+<tbody id="selectionRows"><tr><td colspan="6">Carregando...</td></tr></tbody>
 </table></div>
 </section>
 
@@ -149,6 +151,23 @@ function selectionRequestUrl(x){
  ].join("\n");
  return `https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(body)}`;
 }
+function isYes(v){return ["1","true","yes","sim","required"].includes(String(v||"").toLowerCase())}
+function kycText(x){return isYes(x.kyc_required)?"Obrigatório para pagamento":(["0","false","no","não","nao"].includes(String(x.kyc_required||"").toLowerCase())?"Não informado como obrigatório":"Confirmar nas regras")}
+function internalStage(x,selected){
+ const external=[x.submission_status,x.review_status,x.payment_status].join(" ").toLowerCase();
+ if(/paid|received|settled/.test(external))return {label:"Pago",cls:"ok"};
+ if(/payment_approved|reward_approved/.test(external))return {label:"Pagamento aprovado",cls:"ok"};
+ if(/accepted|triaged|under_review/.test(external))return {label:"Aceita / em triagem",cls:"ok"};
+ if(/submitted|report_sent|application_sent/.test(external)&&!/not_submitted/.test(external))return {label:"Relatório/candidatura enviada",cls:"purple"};
+ if(selected)return {label:"Selecionada internamente",cls:"info"};
+ return {label:"Aguardando sua seleção",cls:"warn"};
+}
+function trackingText(x,selected){
+ const source=String(x.source||"").toLowerCase();
+ if(!selected)return "Sem acompanhamento iniciado.";
+ if(source.includes("immunefi"))return "Auditoria local. Após eventual envio, acompanhar no painel e no e-mail da Immunefi.";
+ return "Acompanhar pelo registro do Brain e pelo canal oficial da plataforma.";
+}
 function set(id,v){$(id).textContent=v}
 async function load(){
  const btn=$("refresh");btn.disabled=true;btn.textContent="Atualizando...";
@@ -180,10 +199,11 @@ async function load(){
    const url=sourceUrl(x.url);const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
    const competition=x.open_competing_prs?x.open_competing_prs+" PR(s) aberto(s)":(x.comments||"0")+" comentário(s)";
    const alreadySelected=selections.some(s=>s.url===x.url);
-   const decision=alreadySelected?'<span class="pill ok">Pedido interno criado</span>':`<a class="select-button" href="${esc(selectionRequestUrl(x))}" target="_blank" rel="noopener noreferrer">Criar pedido de análise</a>`;
-   return `<tr><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}</td><td>${esc(x.source||"-")}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td><td>${decision}</td></tr>`
-  }).join(""):'<tr><td colspan="8">Nenhum candidato aguardando análise humana.</td></tr>';
-  $("selectionRows").innerHTML=selections.length?selections.slice().reverse().map(x=>`<tr><td><a href="https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/${esc(x.issue_number)}" target="_blank" rel="noopener noreferrer">#${esc(x.issue_number)}</a></td><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td><span class="pill warn">${esc(x.status||"-")}</span></td><td>${esc(x.execution_path||"-")}</td><td>${esc(x.selected_at||"-")}</td></tr>`).join(""):'<tr><td colspan="5">Nenhum pedido enviado ainda.</td></tr>';
+   const stage=internalStage(x,alreadySelected);
+   const decision=alreadySelected?'<span class="pill info">Análise interna registrada</span>':`<a class="select-button" href="${esc(selectionRequestUrl(x))}" target="_blank" rel="noopener noreferrer">Selecionar para análise interna</a>`;
+   return `<tr class="${alreadySelected?"selected-row":""}"><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}<div class="small">Valor máximo; não garantido</div></td><td>${esc(x.source||"-")}</td><td><span class="pill ${stage.cls}">${esc(stage.label)}</span></td><td>${esc(kycText(x))}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td><td class="tracking">${esc(trackingText(x,alreadySelected))}</td><td>${decision}</td></tr>`
+  }).join(""):'<tr><td colspan="11">Nenhum candidato aguardando análise humana.</td></tr>';
+  $("selectionRows").innerHTML=selections.length?selections.slice().reverse().map(x=>{const stage=internalStage(x,true);return `<tr class="selected-row"><td><a href="https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/${esc(x.issue_number)}" target="_blank" rel="noopener noreferrer">#${esc(x.issue_number)}</a></td><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td><span class="pill ${stage.cls}">${esc(stage.label)}</span></td><td>O Brain recebeu sua escolha e iniciou a análise interna. Nenhuma ação externa foi enviada.</td><td>${esc(x.execution_path||"-")}</td><td>${esc(x.selected_at||"-")}</td></tr>`}).join(""):'<tr><td colspan="6">Nenhuma seleção interna registrada.</td></tr>';
   $("platformRows").innerHTML=platforms.length?platforms.map(x=>`<tr><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name||"-")}</a></td><td>${esc(x.category||"-")}</td><td>${esc(x.brazil||"-")}</td><td>${esc(x.feed||"-")}</td><td><span class="pill ${statusClass(x.status)}">${esc(x.status||"-")}</span></td><td>${esc(x.monitor_mode||"-")}</td></tr>`).join(""):'<tr><td colspan="6">Nenhuma plataforma registrada.</td></tr>';
   $("operationRows").innerHTML=ops.length?ops.slice(0,25).map(x=>{
    const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toFixed(2));
