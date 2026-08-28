@@ -67,12 +67,12 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 <p class="small">Candidatos potencialmente promissores que precisam de confirmação, elegibilidade, análise de escopo ou ação pessoal antes de qualquer execução.</p>
 <div class="grid">
 <div class="card yellow"><div class="label">Na fila para sua análise</div><div id="humanReviewTotal" class="value">—</div></div>
-<div class="card"><div class="label">Maior valor anunciado</div><div id="humanReviewMax" class="value">—</div></div>
+<div class="card"><div class="label">Maior recompensa máxima</div><div id="humanReviewMax" class="value">—</div></div>
 <div class="card green"><div class="label">Pedidos enviados ao Brain</div><div id="selectionTotal" class="value">—</div></div>
 <div class="card red"><div class="label">Ação automática externa</div><div class="state bad">Bloqueada</div><div class="small">Nenhum claim, teste, inscrição ou candidatura sem sua decisão.</div></div>
 </div>
 <div class="table-wrap"><table>
-<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th><th>Decisão</th></tr></thead>
+<thead><tr><th>Prioridade</th><th>Oportunidade</th><th>Recompensa máxima</th><th>Fonte</th><th>Por que precisa de você</th><th>Concorrência</th><th>Próxima ação</th><th>Decisão</th></tr></thead>
 <tbody id="humanReviewRows"><tr><td colspan="8">Carregando...</td></tr></tbody>
 </table></div>
 <h3>Pedidos já enviados</h3>
@@ -130,9 +130,23 @@ async function csv(name){const r=await fetch(BASE+name+"?v="+Date.now(),{cache:"
 function statusClass(v){const s=String(v||"").toLowerCase();if(/paid|received|settled|completed|ready|approved|success/.test(s))return"ok";if(/blocked|failed|rejected|cancelled|invalid/.test(s))return"bad";return"warn"}
 function sourceUrl(v){try{const u=new URL(v);return u.protocol==="https:"?u.href:"#"}catch{return"#"}}
 function selectionRequestUrl(x){
- const rank=x.truth_rank||x.rank||"-";const title=String(x.title||"Oportunidade").slice(0,140);
- const issueTitle=`[DASHBOARD REVIEW] #${rank} - ${title}`;
- const body=[`Opportunity URL: ${x.url||""}`,`Truth status: ${x.truth_status||""}`,`Advertised reward: ${x.reward_currency||"USD"} ${x.reward_amount||"0"}`,`Source: ${x.source||""}`,`Requested action: ${x.recommended_action||"Prepare individual analysis and execution path"}`,"","I selected this candidate for analysis. Do not perform claims, applications, tests, submissions, signatures or payments without a separate approval."].join("\n");
+ const title=String(x.title||"Oportunidade").slice(0,120);const source=String(x.source||"Fonte externa").slice(0,40);
+ const issueTitle=`[BRAIN ANALYSIS] ${source} / ${title}`;
+ const kyc=String(x.kyc_required||"").toLowerCase();
+ const kycLabel=["1","true","yes"].includes(kyc)?"Yes":(["0","false","no"].includes(kyc)?"No":"Review required");
+ const body=[
+  `Opportunity URL: ${x.url||""}`,
+  `Opportunity type: ${x.category||"Review required"}`,
+  `Truth status: ${x.truth_status||""}`,
+  `Maximum advertised reward: ${x.reward_currency||"USD"} ${x.reward_amount||"0"}`,
+  `Reward basis: ${x.reward_basis||"reported_amount_unverified"}`,
+  `Payment method: ${x.payment_method||"Review required"}`,
+  `KYC required: ${kycLabel}`,
+  `Source: ${source}`,
+  `Requested action: ${x.recommended_action||"Validate official terms and prepare an individual execution path"}`,
+  "",
+  "I selected this candidate for internal analysis. Do not perform claims, applications, public-network tests, submissions, signatures, KYC procedures or payments without a separate approval. Security testing must remain local and within the official program scope."
+ ].join("\n");
  return `https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/new?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(body)}`;
 }
 function set(id,v){$(id).textContent=v}
@@ -166,7 +180,7 @@ async function load(){
    const url=sourceUrl(x.url);const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));
    const competition=x.open_competing_prs?x.open_competing_prs+" PR(s) aberto(s)":(x.comments||"0")+" comentário(s)";
    const alreadySelected=selections.some(s=>s.url===x.url);
-   const decision=alreadySelected?'<span class="pill ok">Pedido enviado</span>':`<a class="select-button" href="${esc(selectionRequestUrl(x))}" target="_blank" rel="noopener noreferrer">Selecionar para análise</a>`;
+   const decision=alreadySelected?'<span class="pill ok">Pedido interno criado</span>':`<a class="select-button" href="${esc(selectionRequestUrl(x))}" target="_blank" rel="noopener noreferrer">Criar pedido de análise</a>`;
    return `<tr><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}</td><td>${esc(x.source||"-")}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td><td>${decision}</td></tr>`
   }).join(""):'<tr><td colspan="8">Nenhum candidato aguardando análise humana.</td></tr>';
   $("selectionRows").innerHTML=selections.length?selections.slice().reverse().map(x=>`<tr><td><a href="https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/${esc(x.issue_number)}" target="_blank" rel="noopener noreferrer">#${esc(x.issue_number)}</a></td><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td><span class="pill warn">${esc(x.status||"-")}</span></td><td>${esc(x.execution_path||"-")}</td><td>${esc(x.selected_at||"-")}</td></tr>`).join(""):'<tr><td colspan="5">Nenhum pedido enviado ainda.</td></tr>';
