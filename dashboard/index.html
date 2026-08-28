@@ -86,10 +86,10 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 
 <section class="panel">
 <h2>Plataformas com conta</h2>
-<p class="small">Monitoramento de pesquisas, testes de usabilidade e trabalhos de treinamento de IA. As oportunidades personalizadas dependem do login, aplicativo ou convite por e-mail.</p>
+<p class="small">O Brain considera também oportunidades que exigem conta. Quando aparecer “Login necessário”, abra a plataforma, entre na sua própria conta e depois informe no ChatGPT: “login concluído na [plataforma]”. A partir daí, continuamos a inspeção e a preparação permitida.</p>
 <div class="table-wrap"><table>
-<thead><tr><th>Plataforma</th><th>Categoria</th><th>Brasil</th><th>Feed</th><th>Status</th><th>Monitoramento</th></tr></thead>
-<tbody id="platformRows"><tr><td colspan="6">Carregando...</td></tr></tbody>
+<thead><tr><th>Plataforma</th><th>Categoria</th><th>Brasil</th><th>Status operacional</th><th>O que você faz</th><th>O que o Brain fará</th><th>Pagamento</th><th>Ação</th></tr></thead>
+<tbody id="platformRows"><tr><td colspan="8">Carregando...</td></tr></tbody>
 </table></div>
 </section>
 
@@ -113,7 +113,7 @@ a{color:#7dd3fc;text-decoration:none;font-weight:700}a:hover{text-decoration:und
 </main>
 <script>
 const BASE="https://raw.githubusercontent.com/ainetwork-global/AI-Network-Lab-Brain/main/01_GLOBAL_REVENUE_BRAIN/04_OPPORTUNITIES/";
-const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv",platforms:"participant_platform_status.csv",selections:"DASHBOARD_HUMAN_SELECTION_QUEUE.csv"};
+const FILES={truth:"LIVE_TRUTH_EXECUTION_QUEUE.csv",operations:"REVENUE_OPERATIONS.csv",approvals:"HUMAN_APPROVAL_QUEUE.csv",platforms:"participant_platform_status.csv",handoffs:"HUMAN_LOGIN_HANDOFF_QUEUE.csv",selections:"DASHBOARD_HUMAN_SELECTION_QUEUE.csv"};
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function parseCsv(text){
@@ -177,7 +177,7 @@ async function load(){
  const btn=$("refresh");btn.disabled=true;btn.textContent="Atualizando...";
  $("error").style.display="none";
  try{
-  const [truth,ops,aps,platforms,selections]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals),csv(FILES.platforms),csv(FILES.selections)]);
+  const [truth,ops,aps,platforms,handoffs,selections]=await Promise.all([csv(FILES.truth),csv(FILES.operations),csv(FILES.approvals),csv(FILES.platforms),csv(FILES.handoffs),csv(FILES.selections)]);
   const ready=truth.filter(x=>/READY_FOR_TECHNICAL_REVIEW|READY_FOR_DEVELOPMENT/.test(x.truth_status)).length;
   const blocked=truth.filter(x=>String(x.truth_status).startsWith("BLOCKED_")).length;
   const review=truth.filter(x=>/REVIEW_REQUIRED|CONFIRMATION_REQUIRED|RETRY_REQUIRED/.test(x.truth_status)&&!String(x.truth_status).startsWith("BLOCKED_")).length;
@@ -208,7 +208,14 @@ async function load(){
    return `<tr class="${alreadySelected?"selected-row":""}"><td><span class="pill warn">#${esc(x.truth_rank||x.rank||"-")}</span></td><td><a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td>${reward}<div class="small">Valor máximo; não garantido</div></td><td>${esc(x.source||"-")}</td><td><span class="pill ${stage.cls}">${esc(stage.label)}</span></td><td>${esc(kycText(x))}</td><td class="reason">${esc(x.truth_reason||x.recommendation_reason||"Revisão necessária")}</td><td>${esc(competition)}</td><td class="action">${esc(x.recommended_action||"Analisar requisitos e decidir")}</td><td class="tracking">${esc(trackingText(x,alreadySelected))}</td><td>${decision}</td></tr>`
   }).join(""):'<tr><td colspan="11">Nenhum candidato aguardando análise humana.</td></tr>';
   $("selectionRows").innerHTML=selections.length?selections.slice().reverse().map(x=>{const stage=internalStage(x,true);return `<tr class="selected-row"><td><a href="https://github.com/ainetwork-global/AI-Network-Lab-Brain/issues/${esc(x.issue_number)}" target="_blank" rel="noopener noreferrer">#${esc(x.issue_number)}</a></td><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.title||"-")}</a></td><td><span class="pill ${stage.cls}">${esc(stage.label)}</span></td><td>O Brain recebeu sua escolha e iniciou a análise interna. Nenhuma ação externa foi enviada.</td><td>${esc(x.execution_path||"-")}</td><td>${esc(x.selected_at||"-")}</td></tr>`}).join(""):'<tr><td colspan="6">Nenhuma seleção interna registrada.</td></tr>';
-  $("platformRows").innerHTML=platforms.length?platforms.map(x=>`<tr><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name||"-")}</a></td><td>${esc(x.category||"-")}</td><td>${esc(x.brazil||"-")}</td><td>${esc(x.feed||"-")}</td><td><span class="pill ${statusClass(x.status)}">${esc(x.status||"-")}</span></td><td>${esc(x.monitor_mode||"-")}</td></tr>`).join(""):'<tr><td colspan="6">Nenhuma plataforma registrada.</td></tr>';
+  const platformHandoffs=handoffs.filter(x=>x.handoff_type==="authenticated_platform");
+  $("platformRows").innerHTML=platforms.length?platforms.map(x=>{
+   const h=platformHandoffs.find(item=>item.platform===x.name)||{};
+   const needsLogin=h.handoff_status==="LOGIN_REQUIRED_TO_DISCOVER";
+   const statusLabel=needsLogin?"Login necessário":(h.handoff_status==="PUBLIC_SCAN_AVAILABLE"?"Busca pública":"Aguardando atualização");
+   const action=needsLogin?`<a class="select-button" href="${esc(sourceUrl(h.url||x.url))}" target="_blank" rel="noopener noreferrer">Abrir e fazer login</a><div class="small">Depois avise no ChatGPT: login concluído na ${esc(x.name)}</div>`:`<a class="select-button" href="${esc(sourceUrl(h.url||x.url))}" target="_blank" rel="noopener noreferrer">Ver oportunidades</a>`;
+   return `<tr><td><a href="${esc(sourceUrl(x.url))}" target="_blank" rel="noopener noreferrer">${esc(x.name||"-")}</a></td><td>${esc(x.category||"-")}</td><td>${esc(x.brazil||"-")}</td><td><span class="pill ${needsLogin?"warn":"ok"}">${esc(statusLabel)}</span></td><td>${esc(h.human_step||"Fazer login quando solicitado")}</td><td>${esc(h.assistant_resume_action||"Analisar oportunidades disponíveis")}</td><td>${esc(h.payment_method||x.payment||"Confirmar na plataforma")}</td><td>${action}</td></tr>`
+  }).join(""):'<tr><td colspan="8">Nenhuma plataforma registrada.</td></tr>';
   $("operationRows").innerHTML=ops.length?ops.slice(0,25).map(x=>{
    const reward=esc((x.reward_currency||"USD")+" "+Number(x.reward_amount||0).toFixed(2));
    const url=sourceUrl(x.source_url);
